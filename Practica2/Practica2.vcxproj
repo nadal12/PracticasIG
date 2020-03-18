@@ -20,11 +20,11 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{08ED197F-CA2E-4528-A022-241E58F8AE9E}</ProjectGuid>
+    <ProjectGuid>{9B9451F6-6C1F-497C-9ECE-DA6AABDC5909}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Practica1</RootNamespace>
+    <RootNamespace>Practica2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Etapa1</ProjectName>
+    <ProjectName>Etapa2</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -148,7 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Etapa1.cpp" />
+    <ClCompile Include="Etapa2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
