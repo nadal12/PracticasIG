@@ -48,6 +48,9 @@ void Display(void)
 	glPopMatrix();
 
 	glFlush();
+
+	//Cambio entre el backbuffer y el frontbuffer.
+	glutSwapBuffers();
 }
 
 // Función que se ejecuta cuando el sistema no esta ocupado
@@ -71,11 +74,13 @@ int main(int argc, char** argv)
 	// Indicamos como ha de ser la nueva ventana
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(W_WIDTH, W_HEIGHT);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);
+
+	//Se habilita el doblebuffer con el comando "GLUT_DOUBLE". 
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
 	// Creamos la nueva ventana
-	glutCreateWindow("Mi primera Ventana");
-
+	glutCreateWindow("Mi primera Ventana - Etapa 2");
+	
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
