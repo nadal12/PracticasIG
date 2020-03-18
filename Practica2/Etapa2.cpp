@@ -2,22 +2,34 @@
 // Fichero principal 
 ////////////////////////////////////////////////////
 
+#include "iostream"
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+
 const int W_WIDTH = 500; // Tamaño incial de la ventana
 const int W_HEIGHT = 500;
 GLfloat fAngulo; // Variable que indica el ángulo de rotación de los ejes. 
 
+//Función que detecta el cambio de ventana. 
+void glutReshapeFunc(int width, int height) {
+	//glScalef((width*0.5)/100, (height*0.5)/100, 0);
+	//std::cout << "Reshape func\n" << width, height;
+}
+
 // Función que visualiza la escena OpenGL
 void Display(void)
 {
+	//Se llama a la función que tiene que mantener la relación de aspecto pasando por parámetro el tamaño de la ventana. 
+	glutReshapeFunc(GLUT_SCREEN_WIDTH, GLUT_SCREEN_HEIGHT);
+
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glPushMatrix();
 	// Rotamos las proximas primitivas
 	glRotatef(fAngulo, 0.0f, 0.0f, 1.0f);
+
 	// Creamos a continuación dibujamos los tres poligonos
 	glBegin(GL_POLYGON);
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -45,6 +57,24 @@ void Display(void)
 	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(-0.5f, -0.866f, 0.0f);
 	glEnd();
+
+	//Se hace un escalado reduciendo el tamaño un 70% para el dibujado del cuadrado. 
+	glScalef(0.3f, 0.3f, 0.3f);
+
+	//Cuadrado. 
+	glBegin(GL_QUADS);
+	glColor3f(1.0, 0.0, 0.0);     
+	glVertex3f(0.5, -0.5, -0.5);      
+	glColor3f(0.0, 1.0, 0.0);     
+	glVertex3f(0.5, 0.5, -0.5);      
+	glColor3f(0.0, 0.0, 1.0);     
+	glVertex3f(-0.5, 0.5, -0.5);     
+	glColor3f(1.0, 0.0, 1.0);     
+	glVertex3f(-0.5, -0.5, -0.5);
+
+
+	glEnd();
+	
 	glPopMatrix();
 
 	glFlush();
@@ -65,6 +95,7 @@ void Idle(void)
 	glutPostRedisplay();
 }
 
+
 // Función principal
 int main(int argc, char** argv)
 {
@@ -80,7 +111,7 @@ int main(int argc, char** argv)
 
 	// Creamos la nueva ventana
 	glutCreateWindow("Mi primera Ventana - Etapa 2");
-	
+
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
