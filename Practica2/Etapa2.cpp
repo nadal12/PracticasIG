@@ -1,5 +1,7 @@
 // Etapa2.cpp
 // Fichero principal 
+//Viewport: sa part de s'ordenador
+//Finestra : sa part des "mon real" que se representa a sa pantalla
 ////////////////////////////////////////////////////
 
 #include "iostream"
@@ -12,17 +14,40 @@ const int W_HEIGHT = 500;
 GLfloat fAngulo; // Variable que indica el ángulo de rotación de los ejes. 
 
 //Función que detecta el cambio de ventana. 
-void glutReshapeFunc(int width, int height) {
+void reshape(int w, int h) {	
+	/*"There are two cases to consider: the aspect of the viewport is 
+	greater than the aspect of your region, so it is wider. In that case,
+	you should map the full height and increase the horitonal range by a 
+	factor of (aspect_viewport/aspect_region). Otherwise, the aspect of the
+	window is lower than aspect of your region, so you should use the full 
+	width and scale up the vertical range by (aspect_region/aspect_viewport). 
+	Note that in both cases, the factor is >= 1."
+	Com que estàs en 2d, assegura't que z1 < z2, si no, no funcionarà i no te dirà el perquè.
+	*/
+	//per tocar window empleam gluReshapeWindow
+	if (h == 0) {
+		h = 1;
+	}
+	float aTri = (float) w / h;	//aspect des viewport
+	float aWin = wFin / hFin;	//aspect de sa finestra
 	
-	int aWindow = width / height;
-
+	if (aTri > aWin) //viewPort major que aspect (aWin) de sa regio 
+	{
+		//tornes a cridara glOrtho
+		//ampladafinestra = ampladaFinestra * (aViewPort/Afinestra)
+	}
+	else
+	{
+		//tornes a cridar a glOrtho amb els nous punts,Calcules el nou x min i x max, y min i y max
+	}
+	
 }
 
 // Función que visualiza la escena OpenGL
 void Display(void)
 {
 	//Se llama a la función que tiene que mantener la relación de aspecto pasando por parámetro el tamaño de la ventana. 
-	glutReshapeFunc(GLUT_SCREEN_WIDTH, GLUT_SCREEN_HEIGHT);
+	glutReshapeFunc(reshape);
 
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -32,7 +57,7 @@ void Display(void)
 	glRotatef(fAngulo, 0.0f, 0.0f, 1.0f);
 
 	// Creamos a continuación dibujamos los tres poligonos
-	glBegin(GL_POLYGON);
+	glBegin(GL_POLYGON);				
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glColor3f(0.0f, 1.0f, 0.0f);
@@ -119,7 +144,11 @@ int main(int argc, char** argv)
 
 	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
 	glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
+	//La sintaxi és glOrtho(x min, x max, y min, y max, z1, z2)
+	//glOrtho(left, right, bottom, top, near, far)
+	//osea amplada i altura = 2
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
