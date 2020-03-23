@@ -13,8 +13,9 @@ GLfloat fAngulo; // Variable que indica el ángulo de rotación de los ejes.
 
 //Función que detecta el cambio de ventana. 
 void glutReshapeFunc(int width, int height) {
-	//glScalef((width*0.5)/100, (height*0.5)/100, 0);
-	//std::cout << "Reshape func\n" << width, height;
+	
+	int aWindow = width / height;
+
 }
 
 // Función que visualiza la escena OpenGL
