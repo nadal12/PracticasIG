@@ -11,6 +11,8 @@
 
 const int W_WIDTH = 500; // Tamaño incial de la ventana
 const int W_HEIGHT = 500;
+const int wMon = 2;
+const int hMon = 2;
 GLfloat fAngulo; // Variable que indica el ángulo de rotación de los ejes. 
 
 //Función que detecta el cambio de ventana. 
@@ -24,21 +26,38 @@ void reshape(int w, int h) {
 	Note that in both cases, the factor is >= 1."
 	Com que estàs en 2d, assegura't que z1 < z2, si no, no funcionarà i no te dirà el perquè.
 	*/
-	//per tocar window empleam gluReshapeWindow
 	if (h == 0) {
 		h = 1;
 	}
-	float aTri = (float) w / h;	//aspect des viewport
-	float aWin = wFin / hFin;	//aspect de sa finestra
 	
-	if (aTri > aWin) //viewPort major que aspect (aWin) de sa regio 
+	float aspecRatioW = (float)wMon / (float)hMon;
+	float aspectRatioV= (float) w / (float) h;	//aspect des viewport
+	//float aWin = wFin / hFin;	//aspect de sa finestra/mon
+	//awin es 1 per 2/2
+	if (aspectRatioV/aspecRatioW < 1)
 	{
-		//tornes a cridara glOrtho
-		//ampladafinestra = ampladaFinestra * (aViewPort/Afinestra)
+		printf("Divios a's menor a 1");
+	}
+	
+	if (aspectRatioV > 1) //viewPort major que aspect (aWin) de sa regio  //aspectratio es ATRI
+	{
+		// map the full height and increase the horitonal range by a 
+		//factor of(aspect_viewport / aspect_region)
+		glLoadIdentity();
+		glOrtho(0 - (aspectRatioV * wMon) / 2, 0 + aspectRatioV *  wMon / 2, -hMon / 2, hMon / 2, -1.0, 1.0f);
+		printf(" ARatio > 1 ");
+		//glOrtho(-(aspectRatio),+(aspectRatio), -hMon/2, hMon/2, -1.0, 1.0f);
+		//glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
 	}
 	else
-	{
-		//tornes a cridar a glOrtho amb els nous punts,Calcules el nou x min i x max, y min i y max
+	{	
+		//so you should use the full
+		//width and scale up the vertical range by(aspect_region / aspect_viewport)
+		glLoadIdentity();
+		glOrtho(-wMon/2, wMon/2, 0 - (hMon/2)* aspecRatioW /aspectRatioV, 0+ hMon/2 * aspecRatioW / aspectRatioV, -1.0, 1.0f);
+		printf(" ARatio < 1 ");
+		//glOrtho(-wMon / 2, wMon / 2, -(aspectRatio), +(aspectRatio), -1.0, 1.0f);
+		//glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
 	}
 	
 }
@@ -136,7 +155,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
 	// Creamos la nueva ventana
-	glutCreateWindow("Mi primera Ventana - Etapa 2");
+	glutCreateWindow("ViewPort - Etapa 2");
 
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
@@ -144,7 +163,7 @@ int main(int argc, char** argv)
 
 	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
+	glLoadIdentity();
 	glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
 	//La sintaxi és glOrtho(x min, x max, y min, y max, z1, z2)
 	//glOrtho(left, right, bottom, top, near, far)
