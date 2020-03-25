@@ -38,7 +38,7 @@ void reshape(int w, int h) {
 		glLoadIdentity();
 		glOrtho(-wMon/2, wMon/2, 0 - hMon* (aspecRatioW /aspectRatioV) / 2, 0+ hMon * (aspecRatioW / aspectRatioV) / 2, -1.0, 1.0f);
 	}
-	glViewport(0, 0, w, h); //falta tornar a pintar on toca 
+	glViewport(0, 0, w, h); //pintam segons es canvi des viewport
 }
 
 // Función que visualiza la escena OpenGL
