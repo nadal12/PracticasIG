@@ -20,7 +20,7 @@ void reshape(int w, int h) {
 		h = 1;
 	}
 	
-	float aspecRatioW = (float)wMon / (float)hMon; //aspect ratio de Window (es 1)
+	float aspecRatioW = (float) wMon / (float) hMon; //aspect ratio de Window (es 1)
 	float aspectRatioV= (float) w / (float) h;	//aspect ratio des viewport 
 
 	if (aspectRatioV > aspecRatioW) //viewPort major que aspect (aWin) de sa regio  
@@ -38,7 +38,7 @@ void reshape(int w, int h) {
 		glLoadIdentity();
 		glOrtho(-wMon/2, wMon/2, 0 - hMon* (aspecRatioW /aspectRatioV) / 2, 0+ hMon * (aspecRatioW / aspectRatioV) / 2, -1.0, 1.0f);
 	}
-	glViewport(0, 0, w, h); //pintam segons es canvi des viewport
+	glViewport(0, 0 ,w, h); //pintam segons es canvi des viewport
 }
 
 // Función que visualiza la escena OpenGL
@@ -51,9 +51,24 @@ void Display(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glPushMatrix();
+
+	//Pintar ejes de coordenadas
+	glBegin(GL_LINES);     // pintar los ejes X
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glEnd();
+
+	glBegin(GL_LINES); // pintar los ejes Y
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glEnd();
+
 	// Rotamos las proximas primitivas
 	glRotatef(fAngulo, 0.0f, 0.0f, 1.0f);
 
+	
 	// Creamos a continuación dibujamos los tres poligonos
 	glBegin(GL_POLYGON);				
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -135,6 +150,7 @@ int main(int argc, char** argv)
 
 	// Creamos la nueva ventana
 	glutCreateWindow("ViewPort - Etapa 2");
+
 
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);

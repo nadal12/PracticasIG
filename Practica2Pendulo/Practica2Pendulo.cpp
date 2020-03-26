@@ -3,11 +3,23 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+constexpr auto PI = 3.1415926535897932384626433832795;
 const int W_WIDTH = 500; // Tamaño incial de la viewport
 const int W_HEIGHT = 500;
 const int wMon = 2;
 const int hMon = 2;
-GLfloat fAngulo; // Variable que indica el ángulo de rotación de los ejes. 
+float longitud_corda = 0.5; //longitud corda
+const float x_corda = 0;
+const float y_corda = 0;
+const float radiQ = 0.05; //radiquadrat
+float angle =PI/4;
+float xq, yq;
+float aVel = 0.0;
+float aAcc = 0.0;
+
+int draw_endpoint = 0;
+int n_points = 500;
+
 
 void reshape(int w, int h) {
 
@@ -36,11 +48,46 @@ void reshape(int w, int h) {
 	glViewport(0, 0, w, h); //pintam segons es canvi des viewport
 }
 
+void pintarQuadrat() {
+	
+	//float yquadrat = y-longitud_corda;
+	float xant = xq;
+	float yant = yq;
+	//actualitzam els punts del quadrat
+	 xq = x_corda + longitud_corda * sin(angle);
+	 yq = y_corda + longitud_corda * cos(angle);
+	 
+	
+	 //trajectoria
+	 glBegin(GL_LINES);
+	 glColor3f(0.0f, 0.0f, 0.0f);
+	 glVertex3f(xant, yant, 0.0f);
+	 glVertex3f(xq, yq, 0.0f);
+	 glEnd();
+	
+
+	
+
+	//Pintam quadrat 
+	glBegin(GL_QUADS);
+	glColor3f(0.0, 0.0, 0.0);
+	glVertex3f(xq + radiQ,yq - radiQ, 0.0);
+	//glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(xq+ radiQ, yq+ radiQ, 0.0);
+	//glColor3f(1.0, 1.0, 0.0);
+	glVertex3f(xq- radiQ, yq+ radiQ, 0.0);
+	//glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(xq- radiQ, yq - radiQ, 0.0);
+	glEnd();
+
+
+}
 // Función que visualiza la escena OpenGL
 void Display(void)
 {
 	//Se llama a la función que tiene que mantener la relación de aspecto pasando por parámetro el tamaño de la ventana. 
-	//glutReshapeFunc(reshape);
+	glutReshapeFunc(reshape);
+
 
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -50,29 +97,27 @@ void Display(void)
 	//Se hace un escalado reduciendo el tamaño un 70% para el dibujado del cuadrado. 
 	//glScalef(0.2f, 0.2f, 0.2f);
 
-	glBegin(GL_LINES); // pintar sostre
+	/*glBegin(GL_LINES); // pintar sostre
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(-0.5f, 0.5f, 0.0f);
 	glVertex3f(0.5f, 0.5f, 0.0f);
+	glEnd();*/
+
+	
+
+	pintarQuadrat();
+
+	glBegin(GL_LINES); // pintar corda
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(x_corda, y_corda, 0.0f);
+	glVertex3f(xq, yq, 0.0f);
+
 	glEnd();
 
-	glBegin(GL_LINES); // pintar los ejes Y
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.5f, 0.0f);
-	glEnd();
+	glRotatef(angle, 0.0f, 0.0f, 1.0f);
 
-	//Cuadrado. 
-	glBegin(GL_QUADS);
-	glColor3f(0.0, 0.0, 0.0);
-	glVertex3f(0.1, -0.1, 0.0);
-	//glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(0.1, 0.1, 0.0);
-	//glColor3f(0.0, 0.0, 1.0);
-	glVertex3f(-0.1, 0.1, 0.0);
-	//glColor3f(1.0, 0.0, 1.0);
-	glVertex3f(-0.1, -0.1, 0.0);
-	glEnd();
+	
+	
 
 	glPopMatrix();
 
@@ -85,11 +130,19 @@ void Display(void)
 // Función que se ejecuta cuando el sistema no esta ocupado
 void Idle(void)
 {
+
+	//per pintar punts
+	draw_endpoint = (draw_endpoint + 1) % n_points;
+
+	//glutPostRedisplay();
+	
 	// Incrementamos el ángulo
-	fAngulo += 1.0f;
+	aAcc = 0.01 * sin(angle);
+	angle += aVel;
+	aVel += aAcc;
+	aVel *= 0.99;
 	// Si es mayor que dos pi la decrementamos
-	if (fAngulo > 360)
-		fAngulo -= 360;
+	
 	// Indicamos que es necesario repintar la pantalla
 	glutPostRedisplay();
 }
