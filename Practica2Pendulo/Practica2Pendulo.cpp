@@ -1,10 +1,10 @@
-#include "iostream"
+Ôªø#include "iostream"
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
 constexpr auto PI = 3.1415926535897932384626433832795;
-const int W_WIDTH = 500; // TamaÒo incial de la viewport
+const int W_WIDTH = 500; // Tama√±o incial de la viewport
 const int W_HEIGHT = 500;
 const int wMon = 2;
 const int hMon = 2;
@@ -12,7 +12,7 @@ float longitud_corda = 0.5; //longitud corda
 const float x_corda = 0;
 const float y_corda = 0;
 const float radiQ = 0.05; //radiquadrat
-float angle =PI/4;
+float angle = PI / 4;
 float xq, yq;
 float aVel = 0.0;
 float aAcc = 0.0;
@@ -49,43 +49,43 @@ void reshape(int w, int h) {
 }
 
 void pintarQuadrat() {
-	
+
 	//float yquadrat = y-longitud_corda;
 	float xant = xq;
 	float yant = yq;
 	//actualitzam els punts del quadrat
-	 xq = x_corda + longitud_corda * sin(angle);
-	 yq = y_corda + longitud_corda * cos(angle);
-	 
-	
-	 //trajectoria
-	 glBegin(GL_LINES);
-	 glColor3f(0.0f, 0.0f, 0.0f);
-	 glVertex3f(xant, yant, 0.0f);
-	 glVertex3f(xq, yq, 0.0f);
-	 glEnd();
-	
+	xq = x_corda + longitud_corda * sin(angle);
+	yq = y_corda + longitud_corda * cos(angle);
 
-	
+
+	//trajectoria
+	glBegin(GL_LINES);
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(xant, yant, 0.0f);
+	glVertex3f(xq, yq, 0.0f);
+	glEnd();
+
+
+
 
 	//Pintam quadrat 
 	glBegin(GL_QUADS);
 	glColor3f(0.0, 0.0, 0.0);
-	glVertex3f(xq + radiQ,yq - radiQ, 0.0);
+	glVertex3f(xq + radiQ, yq - radiQ, 0.0);
 	//glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(xq+ radiQ, yq+ radiQ, 0.0);
+	glVertex3f(xq + radiQ, yq + radiQ, 0.0);
 	//glColor3f(1.0, 1.0, 0.0);
-	glVertex3f(xq- radiQ, yq+ radiQ, 0.0);
+	glVertex3f(xq - radiQ, yq + radiQ, 0.0);
 	//glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(xq- radiQ, yq - radiQ, 0.0);
+	glVertex3f(xq - radiQ, yq - radiQ, 0.0);
 	glEnd();
 
 
 }
-// FunciÛn que visualiza la escena OpenGL
+// Funci√≥n que visualiza la escena OpenGL
 void Display(void)
 {
-	//Se llama a la funciÛn que tiene que mantener la relaciÛn de aspecto pasando por par·metro el tamaÒo de la ventana. 
+	//Se llama a la funci√≥n que tiene que mantener la relaci√≥n de aspecto pasando por par√°metro el tama√±o de la ventana. 
 	glutReshapeFunc(reshape);
 
 
@@ -94,7 +94,7 @@ void Display(void)
 
 	glPushMatrix();
 
-	//Se hace un escalado reduciendo el tamaÒo un 70% para el dibujado del cuadrado. 
+	//Se hace un escalado reduciendo el tama√±o un 70% para el dibujado del cuadrado. 
 	//glScalef(0.2f, 0.2f, 0.2f);
 
 	/*glBegin(GL_LINES); // pintar sostre
@@ -103,7 +103,7 @@ void Display(void)
 	glVertex3f(0.5f, 0.5f, 0.0f);
 	glEnd();*/
 
-	
+
 
 	pintarQuadrat();
 
@@ -116,8 +116,8 @@ void Display(void)
 
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
 
-	
-	
+
+
 
 	glPopMatrix();
 
@@ -127,7 +127,7 @@ void Display(void)
 	glutSwapBuffers();
 }
 
-// FunciÛn que se ejecuta cuando el sistema no esta ocupado
+// Funci√≥n que se ejecuta cuando el sistema no esta ocupado
 void Idle(void)
 {
 
@@ -135,23 +135,23 @@ void Idle(void)
 	draw_endpoint = (draw_endpoint + 1) % n_points;
 
 	//glutPostRedisplay();
-	
-	// Incrementamos el ·ngulo
+
+	// Incrementamos el √°ngulo
 	aAcc = 0.01 * sin(angle);
 	angle += aVel;
 	aVel += aAcc;
 	aVel *= 0.99;
 	// Si es mayor que dos pi la decrementamos
-	
+
 	// Indicamos que es necesario repintar la pantalla
 	glutPostRedisplay();
 }
 
 
-// FunciÛn principal
+// Funci√≥n principal
 int main(int argc, char** argv)
 {
-	// Inicializamos la librerÌa GLUT
+	// Inicializamos la librer√≠a GLUT
 	glutInit(&argc, argv);
 
 	// Indicamos como ha de ser la nueva ventana
@@ -162,19 +162,19 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
 	// Creamos la nueva ventana
-	glutCreateWindow("Etapa 2 - PÈndulo");
+	glutCreateWindow("Etapa 2 - P√©ndulo");
 
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
 
-	// El color de fondo ser· el negro (RGBA, RGB + Alpha channel)
+	// El color de fondo ser√° el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	//glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
-	//La sintaxi Ès glOrtho(x min, x max, y min, y max, z1, z2)
+	//La sintaxi √©s glOrtho(x min, x max, y min, y max, z1, z2)
 
 
-	// Comienza la ejecuciÛn del core de GLUT
+	// Comienza la ejecuci√≥n del core de GLUT
 	glutMainLoop();
 	return 0;
 }
