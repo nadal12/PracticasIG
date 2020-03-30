@@ -39,7 +39,7 @@ float aVel2 = 0.0;
 float aAcc2 = 0.0;
 const float m2 = 10;
 
-const int trajectoryQ1Lenght = 300;
+const int trajectoryQ1Lenght = 200;
 float trajectoryXQ1[trajectoryQ1Lenght];
 float trajectoryYQ1[trajectoryQ1Lenght];
 
@@ -48,8 +48,6 @@ float trajectoryXQ2[trajectoryQ2Lenght];
 float trajectoryYQ2[trajectoryQ2Lenght];
 
 int index = 0;
-
-
 
 void reshape(int w, int h) {
 
@@ -80,54 +78,45 @@ void reshape(int w, int h) {
 
 void pintarQuadrat() {
 
-	float xantq2 = xq2;
-	float yantq2 = yq2;
+	//Trajectòria quadrat 1
+	trajectoryXQ1[index % trajectoryQ1Lenght] = xq;
+	trajectoryYQ1[index % trajectoryQ1Lenght] = yq;
 
 	//Nous valors q1
 	xq = x_corda + longitud_corda * sin(angle);
 	yq = y_corda + longitud_corda * cos(angle);
 
-	//Trajectòria quadrat 1
-	//trajectoryXQ1[index % trajectoryQ1Lenght] = xq;
-	//trajectoryYQ1[index % trajectoryQ1Lenght] = yq;
+	//Trajectòria quadrat 2
+	trajectoryXQ2[index % trajectoryQ2Lenght] = xq2;
+	trajectoryYQ2[index % trajectoryQ2Lenght] = yq2;
 
 	//Nous valors q2
 	xq2 = xq + longitud_corda2 * sin(angle2);
 	yq2 = yq + longitud_corda2 * cos(angle2);
 
-	//Trajectòria quadrat 2
-	trajectoryXQ2[index % trajectoryQ2Lenght] = xq2;
-	trajectoryYQ2[index % trajectoryQ2Lenght] = yq2;
-
 	//Dibuixar trajectòria quadrat1
+	glPushMatrix();
 	for (size_t i = 0; i < trajectoryQ1Lenght; i++) {
-
 		if (trajectoryXQ1[i] != NULL) {
-			glPushMatrix();
-			glBegin(GL_LINES);
+			glBegin(GL_POINTS);
 			glColor3f(1.0f, 0.0f, 0.0f);
-			glVertex3f((GLfloat)trajectoryXQ1[i], (GLfloat)trajectoryYQ1[i], 0.0f);
-			glVertex3f((GLfloat)trajectoryXQ1[i + 1], (GLfloat)trajectoryYQ1[i + 1], 0.0f);
+			glVertex3f (trajectoryXQ1[i], trajectoryYQ1[i], 0.0f);
 			glEnd();
-			glPopMatrix();
 		}
-
 	}
+	glPopMatrix();
 
+	glPushMatrix();
 	//Dibuixar trajectòria quadrat2
 	for (size_t i = 0; i < trajectoryQ2Lenght; i++) {
-
 		if (trajectoryXQ2[i] != NULL) {
-			glPushMatrix();
-			glBegin(GL_LINES);
-			glColor3f(0.0f, 1.0f, 0.0f);
-			glVertex3f((GLfloat)trajectoryXQ2[i], (GLfloat)trajectoryYQ2[i], 0.0f);
-			glVertex3f(xq, yq, 0.0f);
+			glBegin(GL_POINTS);
+			glColor3f(0.0f, 0.0f, 1.0f);
+			glVertex3f(trajectoryXQ2[i], trajectoryYQ2[i], 0.0f);
 			glEnd();
-			glPopMatrix();
 		}
-
 	}
+	glPopMatrix();
 
 	//Pintam quadrat pendulo 1
 	glBegin(GL_QUADS);
