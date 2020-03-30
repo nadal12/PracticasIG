@@ -13,12 +13,17 @@ const float x_corda = 0;
 const float y_corda = 0;
 const float radiQ = 0.05; //radiquadrat
 float angle = PI / 4;
-float xq, yq;
+float xq, yq = NULL;
 float aVel = 0.0;
 float aAcc = 0.0;
 
 int draw_endpoint = 0;
 int n_points = 500;
+
+const int trajectoryQ1Lenght = 100;
+float trajectoryXQ1[trajectoryQ1Lenght];
+float trajectoryYQ1[trajectoryQ1Lenght];
+int index = 0;
 
 
 void reshape(int w, int h) {
@@ -50,22 +55,26 @@ void reshape(int w, int h) {
 
 void pintarQuadrat() {
 
-	//float yquadrat = y-longitud_corda;
-	float xant = xq;
-	float yant = yq;
+
+	//Trajectòria quadrat
+	trajectoryXQ1[index % trajectoryQ1Lenght] = xq;
+	trajectoryYQ1[index % trajectoryQ1Lenght] = yq;
+
 	//actualitzam els punts del quadrat
 	xq = x_corda + longitud_corda * sin(angle);
 	yq = y_corda + longitud_corda * cos(angle);
 
-
-	//trajectoria
-	glBegin(GL_LINES);
-	glColor3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(xant, yant, 0.0f);
-	glVertex3f(xq, yq, 0.0f);
-	glEnd();
-
-
+	//Dibuixar trajectòria quadrat1
+	glPushMatrix();
+	for (size_t i = 0; i < trajectoryQ1Lenght; i++) {
+		if (trajectoryXQ1[i] != NULL) {
+			glBegin(GL_POINTS);
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glVertex3f(trajectoryXQ1[i], trajectoryYQ1[i], 0.0f);
+			glEnd();
+		}
+	}
+	glPopMatrix();
 
 
 	//Pintam quadrat 
@@ -79,8 +88,6 @@ void pintarQuadrat() {
 	//glColor3f(1.0, 0.0, 0.0);
 	glVertex3f(xq - radiQ, yq - radiQ, 0.0);
 	glEnd();
-
-
 }
 // Función que visualiza la escena OpenGL
 void Display(void)
@@ -142,6 +149,13 @@ void Idle(void)
 	aVel += aAcc;
 	aVel *= 0.99;
 	// Si es mayor que dos pi la decrementamos
+
+	if (index == trajectoryQ1Lenght) {
+		index = 1;
+	}
+	else {
+		index++;
+	}
 
 	// Indicamos que es necesario repintar la pantalla
 	glutPostRedisplay();
