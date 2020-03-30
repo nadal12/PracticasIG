@@ -2,8 +2,6 @@
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <chrono>
-#include <thread>
 
 constexpr auto PI = 3.1415926535897932384626433832795;
 const int W_WIDTH = 500; // Tamaño incial de la viewport
@@ -263,7 +261,7 @@ int main(int argc, char** argv)
 
 	// Creamos la nueva ventana
 	glutCreateWindow("Etapa 2 - Doble Pendulo");
-
+	
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
@@ -272,7 +270,6 @@ int main(int argc, char** argv)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	//glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
 	//La sintaxi és glOrtho(x min, x max, y min, y max, z1, z2)
-
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
