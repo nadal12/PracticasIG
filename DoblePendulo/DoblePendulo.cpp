@@ -21,7 +21,7 @@ float xq, yq;
 float aVel = 0.0;
 float aAcc = 0.0;
 const float m1 = 10;
-const float g = -0.001;
+const float g = -0.0001;
 
 
 
@@ -92,11 +92,11 @@ void pintarQuadrat() {
 	glColor3f(0.0, 0.0, 0.0);
 	glVertex3f(xq + radiQ, yq - radiQ, 0.0);
 	//glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(xq + radiQ, yq + radiQ, 0.0);
+	glVertex3f(xq + radiQ,yq+radiQ, 0.0);
 	//glColor3f(1.0, 1.0, 0.0);
-	glVertex3f(xq - radiQ, yq + radiQ, 0.0);
+	glVertex3f(xq-radiQ, yq + radiQ, 0.0);
 	//glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(xq - radiQ, yq - radiQ, 0.0);
+	glVertex3f(xq - radiQ, yq-radiQ, 0.0);
 	glEnd();
 
 	
@@ -160,13 +160,13 @@ void Display(void)
 	glEnd();*/
 
 
-	
+	glRotatef(angle, 0.0f, 0.0f, 1.0f);
 	pintarQuadrat();
 
 	glBegin(GL_LINES); // pintar corda
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(x_corda, y_corda, 0.0f);
-	glVertex3f(xq, yq, 0.0f);
+	glVertex3f(xq, yq+radiQ, 0.0f);
 
 	
 	glVertex3f(xq, yq, 0.0f);
@@ -175,7 +175,7 @@ void Display(void)
 
 	glEnd();
 
-	glRotatef(angle, 0.0f, 0.0f, 1.0f);
+	
 
 
 
