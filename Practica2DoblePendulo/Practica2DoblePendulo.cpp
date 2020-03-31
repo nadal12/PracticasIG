@@ -6,7 +6,7 @@
 #include <thread>
 
 //Constants generals
-const int W_WIDTH = 500; 
+const int W_WIDTH = 500;
 const int W_HEIGHT = 500;
 const int wMon = 2;
 const int hMon = 2;
@@ -59,9 +59,9 @@ void reshape(int w, int h) {
 	float aspecRatioW = (float)wMon / (float)hMon; //aspect ratio del Window
 	float aspectRatioV = (float)w / (float)h;	//aspect ratio del viewport 
 
-	if (aspectRatioV > aspecRatioW) 
+	if (aspectRatioV > aspecRatioW)
 		//ViewPort major que aspect (aWin) de la regió  
-	{	
+	{
 		//Amplada nova = Amplada anterior * (aViewPort / aWindow)
 		//0 -+ i /2 para centrarlo
 		glLoadIdentity();
@@ -69,7 +69,7 @@ void reshape(int w, int h) {
 	}
 	else
 	{
-		
+
 		//Altura nova = Amplada Anterior * (aViewPort / aWindow)
 		//Posam 0 -+ perque estigui centrat
 		glLoadIdentity();
@@ -107,7 +107,7 @@ void pintarPendulos() {
 	//Dibuixar trajectòria quadrat1
 	if (traj)
 	{
-		
+
 
 		glPushMatrix();
 		for (size_t i = 0; i < trajectoryQ1Lenght; i++) {
@@ -139,9 +139,9 @@ void pintarPendulos() {
 		buida(trajectoryYQ1);
 	}
 
-	
-	
-	
+
+
+
 	//Pintam quadrat pendulo 1
 	glBegin(GL_QUADS);
 	glColor3f(0.0, 0.0, 0.0);
@@ -173,16 +173,16 @@ void pintarPendulos() {
 	glVertex3f(xq, yq, 0.0f);
 	glVertex3f(xq2, yq2, 0.0f);
 	glEnd();
-	
+
 }
 
 
-void controlTeclado(unsigned char key,int x, int y) {
+void controlTeclado(unsigned char key, int x, int y) {
 	switch (key)
 	{
 	case 't':
 		traj = !traj;
-			break;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -209,7 +209,7 @@ void calcular() {
 void Display(void)
 {
 	//Cridam reshape per si la finestra es modifica durant la execuió
- 	glutReshapeFunc(reshape);
+	glutReshapeFunc(reshape);
 
 
 	//Borram l'escena
@@ -289,7 +289,7 @@ int main(int argc, char** argv)
 
 	// El color de fondo serà el negre (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	
+
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
 	return 0;
