@@ -48,7 +48,8 @@ const int trajectoryQ2Lenght = 1000;
 float trajectoryXQ2[trajectoryQ2Lenght];
 float trajectoryYQ2[trajectoryQ2Lenght];
 
-int index = 0;
+int indexQ1 = 0;
+int indexQ2 = 0; 
 
 void reshape(int w, int h) {
 
@@ -65,7 +66,7 @@ void reshape(int w, int h) {
 		//Amplada nova = Amplada anterior * (aViewPort / aWindow)
 		//0 -+ i /2 para centrarlo
 		glLoadIdentity();
-		glOrtho(0 - (wMon * (aspectRatioV / aspecRatioW)) / 2, 0 + (wMon * (aspectRatioV / aspecRatioW)) / 2, -hMon / 2, hMon / 2, -1.0, 1.0f);
+		glOrtho((GLdouble) 0 - (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble) 0 + (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble)-hMon / 2, (GLdouble) hMon / 2, (GLdouble) -1.0, (GLdouble) 1.0f);
 	}
 	else
 	{
@@ -73,41 +74,38 @@ void reshape(int w, int h) {
 		//Altura nova = Amplada Anterior * (aViewPort / aWindow)
 		//Posam 0 -+ perque estigui centrat
 		glLoadIdentity();
-		glOrtho(-wMon / 2, wMon / 2, 0 - hMon * (aspecRatioW / aspectRatioV) / 2, 0 + hMon * (aspecRatioW / aspectRatioV) / 2, -1.0, 1.0f);
+		glOrtho((GLdouble) -wMon / 2, wMon / 2, (GLdouble) 0 - hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble) 0 + hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble)-1.0, (GLdouble) 1.0f);
 	}
 	glViewport(0, 0, w, h); //Pintam segons es canvi des viewport
 }
 
 //Funcio per buidar arrays
-void buida(float pp[]) {
-	for (int i = 0; i < trajectoryQ1Lenght; i++)
-	{
-		pp[i] = NULL;
+void buida(float trajectory [], int length) {
+	for (int i = 0; i < length; i++) {
+		trajectory[i] = NULL;
 	}
 }
 
 void pintarPendulos() {
 
-	//Trajectòria quadrat 1
-	trajectoryXQ1[index % trajectoryQ1Lenght] = xq;
-	trajectoryYQ1[index % trajectoryQ1Lenght] = yq;
-
 	//Nous valors posició q1
 	xq = x_corda + longitud_corda * sin(angle);
 	yq = y_corda + longitud_corda * cos(angle);
-
-	//Trajectòria quadrat 2
-	trajectoryXQ2[index % trajectoryQ2Lenght] = xq2;
-	trajectoryYQ2[index % trajectoryQ2Lenght] = yq2;
 
 	//Nous valors posició q2
 	xq2 = xq + longitud_corda2 * sin(angle2);
 	yq2 = yq + longitud_corda2 * cos(angle2);
 
 	//Dibuixar trajectòria quadrat1
-	if (traj)
-	{
+	if (traj) {
 
+		//Trajectòria quadrat 1
+		trajectoryXQ1[indexQ1 % trajectoryQ1Lenght] = xq;
+		trajectoryYQ1[indexQ1 % trajectoryQ1Lenght] = yq;
+
+		//Trajectòria quadrat 2
+		trajectoryXQ2[indexQ2 % trajectoryQ2Lenght] = xq2;
+		trajectoryYQ2[indexQ2 % trajectoryQ2Lenght] = yq2;
 
 		glPushMatrix();
 		for (size_t i = 0; i < trajectoryQ1Lenght; i++) {
@@ -132,15 +130,13 @@ void pintarPendulos() {
 			}
 		}
 		glPopMatrix();
+	} else {
+		buida(trajectoryXQ1, trajectoryQ1Lenght);
+		buida(trajectoryYQ1, trajectoryQ1Lenght);
+		buida(trajectoryXQ2, trajectoryQ2Lenght);
+		buida(trajectoryYQ2, trajectoryQ2Lenght);
+		indexQ1, indexQ2 = 0;
 	}
-	else
-	{
-		buida(trajectoryXQ1);
-		buida(trajectoryYQ1);
-	}
-
-
-
 
 	//Pintam quadrat pendulo 1
 	glBegin(GL_QUADS);
@@ -173,13 +169,11 @@ void pintarPendulos() {
 	glVertex3f(xq, yq, 0.0f);
 	glVertex3f(xq2, yq2, 0.0f);
 	glEnd();
-
 }
 
 
 void controlTeclado(unsigned char key, int x, int y) {
-	switch (key)
-	{
+	switch (key) {
 	case 't':
 		traj = !traj;
 		break;
@@ -253,11 +247,21 @@ void Idle(void)
 	*/
 
 	//Perque index no s'incrementi fins a nombres molt grans
-	if (index == trajectoryQ1Lenght) {
-		index = 1;
-	}
-	else {
-		index++;
+	if (traj) {
+		if (indexQ1 == trajectoryQ1Lenght) {
+			indexQ1 = 1;
+		}
+		else {
+			indexQ1++;
+		}
+
+		//Perque index no s'incrementi fins a nombres molt grans
+		if (indexQ2 == trajectoryQ2Lenght) {
+			indexQ2 = 1;
+		}
+		else {
+			indexQ2++;
+		}
 	}
 
 	//Indicam que es necessari repintar la pantalla

@@ -18,25 +18,26 @@ void reshape(int w, int h) {
 		h = 1;
 	}
 
-	float aspecRatioW = (float)wMon / (float)hMon; //aspect ratio de Window (es 1)
-	float aspectRatioV = (float)w / (float)h;	//aspect ratio des viewport 
+	float aspecRatioW = (float)wMon / (float)hMon; //aspect ratio del Window
+	float aspectRatioV = (float)w / (float)h;	//aspect ratio del viewport 
 
-	if (aspectRatioV > aspecRatioW) //viewPort major que aspect (aWin) de sa regio  
-	{	//hem de tocar amplada (w) de window. Deixam altura igual i tocam amplada.
-		//Amplada nova = Amplada Anterior * (aViewPort / aWindow)
-		//Posam 0 -+ i /2 perque estigui centrat
+	if (aspectRatioV > aspecRatioW)
+		//ViewPort major que aspect (aWin) de la regió  
+	{
+		//Amplada nova = Amplada anterior * (aViewPort / aWindow)
+		//0 -+ i /2 para centrarlo
 		glLoadIdentity();
-		glOrtho(0 - (wMon * (aspectRatioV / aspecRatioW)) / 2, 0 + (wMon * (aspectRatioV / aspecRatioW)) / 2, -hMon / 2, hMon / 2, -1.0, 1.0f);
+		glOrtho((GLdouble)0 - (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble)0 + (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble)-hMon / 2, (GLdouble)hMon / 2, (GLdouble)-1.0, (GLdouble)1.0f);
 	}
 	else
 	{
-		//hem de tocar altura (h) de window. Deixam amplada igual i tocam altura.
+
 		//Altura nova = Amplada Anterior * (aViewPort / aWindow)
 		//Posam 0 -+ perque estigui centrat
 		glLoadIdentity();
-		glOrtho(-wMon / 2, wMon / 2, 0 - hMon * (aspecRatioW / aspectRatioV) / 2, 0 + hMon * (aspecRatioW / aspectRatioV) / 2, -1.0, 1.0f);
+		glOrtho((GLdouble)-wMon / 2, wMon / 2, (GLdouble)0 - hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble)0 + hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble)-1.0, (GLdouble)1.0f);
 	}
-	glViewport(0, 0, w, h); //pintam segons es canvi des viewport
+	glViewport(0, 0, w, h); //Pintam segons es canvi des viewport
 }
 
 // Función que visualiza la escena OpenGL

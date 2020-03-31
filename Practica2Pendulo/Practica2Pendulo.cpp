@@ -48,7 +48,7 @@ void reshape(int w, int h) {
 		//Amplada nova = Amplada anterior * (aViewPort / aWindow)
 		//0 -+ i /2 para centrarlo
 		glLoadIdentity();
-		glOrtho(0 - (wMon * (aspectRatioV / aspecRatioW)) / 2, 0 + (wMon * (aspectRatioV / aspecRatioW)) / 2, -hMon / 2, hMon / 2, -1.0, 1.0f);
+		glOrtho((GLdouble)0 - (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble)0 + (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble)-hMon / 2, (GLdouble)hMon / 2, (GLdouble)-1.0, (GLdouble)1.0f);
 	}
 	else
 	{
@@ -56,7 +56,7 @@ void reshape(int w, int h) {
 		//Altura nova = Amplada Anterior * (aViewPort / aWindow)
 		//Posam 0 -+ perque estigui centrat
 		glLoadIdentity();
-		glOrtho(-wMon / 2, wMon / 2, 0 - hMon * (aspecRatioW / aspectRatioV) / 2, 0 + hMon * (aspecRatioW / aspectRatioV) / 2, -1.0, 1.0f);
+		glOrtho((GLdouble)-wMon / 2, wMon / 2, (GLdouble)0 - hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble)0 + hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble)-1.0, (GLdouble)1.0f);
 	}
 	glViewport(0, 0, w, h); //Pintam segons es canvi des viewport
 }
