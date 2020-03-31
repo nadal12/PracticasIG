@@ -3,27 +3,34 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-constexpr auto PI = 3.1415926535897932384626433832795;
+//Constants generals
 const int W_WIDTH = 500; // Tamaño incial de la viewport
 const int W_HEIGHT = 500;
 const int wMon = 2;
 const int hMon = 2;
-float longitud_corda = 0.5; //longitud corda
-const float x_corda = 0;
+
+//Constants Pendul
+constexpr auto PI = 3.1415926535897932384626433832795;
+
+//Característiques 
+float longitud_corda = 0.5; //longitud braç
+const float x_corda = 0;	//Iici corda
 const float y_corda = 0;
-const float radiQ = 0.05; //radiquadrat
-float angle = PI / 4;
-float xq, yq = NULL;
-float aVel = 0.0;
-float aAcc = 0.0;
+const float radiQ = 0.05;	//Radio quadrat 1
+float angle = PI / 4;		//Angle
 
-int draw_endpoint = 0;
-int n_points = 500;
 
+float xq, yq = NULL;		//Centro quadrat
+float aVel = 0.0;			//Velocitat 
+float aAcc = 0.0;			//Acceleración
+
+
+//Constants per càlcul de trajectòria
 const int trajectoryQ1Lenght = 100;
 float trajectoryXQ1[trajectoryQ1Lenght];
 float trajectoryYQ1[trajectoryQ1Lenght];
 int index = 0;
+
 
 
 void reshape(int w, int h) {
@@ -32,25 +39,26 @@ void reshape(int w, int h) {
 		h = 1;
 	}
 
-	float aspecRatioW = (float)wMon / (float)hMon; //aspect ratio de Window (es 1)
-	float aspectRatioV = (float)w / (float)h;	//aspect ratio des viewport 
+	float aspecRatioW = (float)wMon / (float)hMon; //aspect ratio del Window
+	float aspectRatioV = (float)w / (float)h;	//aspect ratio del viewport 
 
-	if (aspectRatioV > aspecRatioW) //viewPort major que aspect (aWin) de sa regio  
-	{	//hem de tocar amplada (w) de window. Deixam altura igual i tocam amplada.
-		//Amplada nova = Amplada Anterior * (aViewPort / aWindow)
-		//Posam 0 -+ i /2 perque estigui centrat
+	if (aspectRatioV > aspecRatioW)
+		//ViewPort major que aspect (aWin) de la regió  
+	{
+		//Amplada nova = Amplada anterior * (aViewPort / aWindow)
+		//0 -+ i /2 para centrarlo
 		glLoadIdentity();
 		glOrtho(0 - (wMon * (aspectRatioV / aspecRatioW)) / 2, 0 + (wMon * (aspectRatioV / aspecRatioW)) / 2, -hMon / 2, hMon / 2, -1.0, 1.0f);
 	}
 	else
 	{
-		//hem de tocar altura (h) de window. Deixam amplada igual i tocam altura.
+
 		//Altura nova = Amplada Anterior * (aViewPort / aWindow)
 		//Posam 0 -+ perque estigui centrat
 		glLoadIdentity();
 		glOrtho(-wMon / 2, wMon / 2, 0 - hMon * (aspecRatioW / aspectRatioV) / 2, 0 + hMon * (aspecRatioW / aspectRatioV) / 2, -1.0, 1.0f);
 	}
-	glViewport(0, 0, w, h); //pintam segons es canvi des viewport
+	glViewport(0, 0, w, h); //Pintam segons es canvi des viewport
 }
 
 void pintarQuadrat() {
@@ -81,75 +89,58 @@ void pintarQuadrat() {
 	glBegin(GL_QUADS);
 	glColor3f(0.0, 0.0, 0.0);
 	glVertex3f(xq + radiQ, yq - radiQ, 0.0);
-	//glColor3f(1.0, 0.0, 0.0);
 	glVertex3f(xq + radiQ, yq + radiQ, 0.0);
-	//glColor3f(1.0, 1.0, 0.0);
 	glVertex3f(xq - radiQ, yq + radiQ, 0.0);
-	//glColor3f(1.0, 0.0, 0.0);
 	glVertex3f(xq - radiQ, yq - radiQ, 0.0);
 	glEnd();
+
+	//Pintam corda 
+	glBegin(GL_LINES);
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(x_corda, y_corda, 0.0f);
+	glVertex3f(xq, yq, 0.0f);
+	glEnd();
 }
-// Función que visualiza la escena OpenGL
+
 void Display(void)
 {
-	//Se llama a la función que tiene que mantener la relación de aspecto pasando por parámetro el tamaño de la ventana. 
+	//Cridam reshape per si la finestra es modifica durant la execuió
 	glutReshapeFunc(reshape);
 
-
-	// Borramos la escena
+	//Borram l'escena
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glPushMatrix();
 
-	//Se hace un escalado reduciendo el tamaño un 70% para el dibujado del cuadrado. 
-	//glScalef(0.2f, 0.2f, 0.2f);
-
-	/*glBegin(GL_LINES); // pintar sostre
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(-0.5f, 0.5f, 0.0f);
-	glVertex3f(0.5f, 0.5f, 0.0f);
-	glEnd();*/
-
-
-
+	//Pintam pèndul
 	pintarQuadrat();
-
-	glBegin(GL_LINES); // pintar corda
-	glColor3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(x_corda, y_corda, 0.0f);
-	glVertex3f(xq, yq, 0.0f);
 
 	glEnd();
 
+	//Funcio que actualitzarà l'angle
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
-
-
-
 
 	glPopMatrix();
 
 	glFlush();
 
-	//Cambio entre el backbuffer y el frontbuffer.
+	//Canvi entre el backbuffer y el frontbuffer.
 	glutSwapBuffers();
 }
 
-// Función que se ejecuta cuando el sistema no esta ocupado
+//Funció que s'executa quan el sistema no esta ocupat
 void Idle(void)
 {
 
-	//per pintar punts
-	draw_endpoint = (draw_endpoint + 1) % n_points;
-
-	//glutPostRedisplay();
-
-	// Incrementamos el ángulo
+	//Incrementam velocitat amb acceleració, angle i velocitats
 	aAcc = 0.01 * sin(angle);
 	angle += aVel;
 	aVel += aAcc;
-	aVel *= 0.99;
-	// Si es mayor que dos pi la decrementamos
 
+	// Aplicam el component de fricció
+	aVel *= 0.99;
+	
+	//Perque index no s'incrementi fins a nombres molt grans
 	if (index == trajectoryQ1Lenght) {
 		index = 1;
 	}
@@ -157,36 +148,34 @@ void Idle(void)
 		index++;
 	}
 
-	// Indicamos que es necesario repintar la pantalla
+	//Indicam que es necessari repintar la pantalla
 	glutPostRedisplay();
 }
 
 
-// Función principal
+
+// Funció principal
 int main(int argc, char** argv)
 {
-	// Inicializamos la librería GLUT
+	// Inicialtzam  la llibreria GLUT
 	glutInit(&argc, argv);
 
-	// Indicamos como ha de ser la nueva ventana
+	// Definim finestra
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(W_WIDTH, W_HEIGHT);
 
-	//Se habilita el doblebuffer con el comando "GLUT_DOUBLE". 
+	//	Habilitam doble buffer
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
-	// Creamos la nueva ventana
-	glutCreateWindow("Etapa 2 - Péndulo");
+	// Cream nova finestra
+	glutCreateWindow("Etapa 2 - Doble Pendulo");
 
-	// Indicamos cuales son las funciones de redibujado e idle
+	// Indicamos quienes són les funcions de dibuizar i idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
 
-	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
+	// El color de fondo serà el negre (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
-	//La sintaxi és glOrtho(x min, x max, y min, y max, z1, z2)
-
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
