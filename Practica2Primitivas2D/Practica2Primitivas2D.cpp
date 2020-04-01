@@ -43,9 +43,6 @@ void reshape(int w, int h) {
 // Función que visualiza la escena OpenGL
 void Display(void)
 {
-	//Se llama a la función que tiene que mantener la relación de aspecto pasando por parámetro el tamaño de la ventana. 
-	glutReshapeFunc(reshape);
-
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -128,7 +125,6 @@ void Display(void)
 	glEnd();
 
 	glPopMatrix();
-	glFlush();
 
 	//Cambio entre el backbuffer y el frontbuffer.
 	glutSwapBuffers();
@@ -178,6 +174,8 @@ int main(int argc, char** argv)
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
+	//Se indica cual es la función de reshape.
+	glutReshapeFunc(reshape);
 
 	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

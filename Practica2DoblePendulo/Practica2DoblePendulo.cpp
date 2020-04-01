@@ -202,10 +202,6 @@ void calcular() {
 }
 void Display(void)
 {
-	//Cridam reshape per si la finestra es modifica durant la execuió
-	glutReshapeFunc(reshape);
-
-
 	//Borram l'escena
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -220,7 +216,6 @@ void Display(void)
 
 	glPopMatrix();
 
-	glFlush();
 
 	//Cnavi entre el backbuffer y el frontbuffer.
 	glutSwapBuffers();
@@ -288,6 +283,9 @@ int main(int argc, char** argv)
 	// Indicamos quienes són les funcions de dibuizar i idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
+
+	//Se indica cual es la función de reshape.
+	glutReshapeFunc(reshape);
 
 	glutKeyboardFunc(controlTeclado);
 

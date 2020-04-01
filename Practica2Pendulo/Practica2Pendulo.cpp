@@ -63,7 +63,6 @@ void reshape(int w, int h) {
 
 void pintarQuadrat() {
 
-
 	//Trajectòria quadrat
 	trajectoryXQ1[index % trajectoryQ1Lenght] = xq;
 	trajectoryYQ1[index % trajectoryQ1Lenght] = yq;
@@ -104,9 +103,6 @@ void pintarQuadrat() {
 
 void Display(void)
 {
-	//Cridam reshape per si la finestra es modifica durant la execuió
-	glutReshapeFunc(reshape);
-
 	//Borram l'escena
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -121,8 +117,6 @@ void Display(void)
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
 
 	glPopMatrix();
-
-	glFlush();
 
 	//Canvi entre el backbuffer y el frontbuffer.
 	glutSwapBuffers();
@@ -173,6 +167,8 @@ int main(int argc, char** argv)
 	// Indicamos quienes són les funcions de dibuizar i idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
+	//Se indica cual es la función de reshape.
+	glutReshapeFunc(reshape);
 
 	// El color de fondo serà el negre (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
