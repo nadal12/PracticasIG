@@ -2,12 +2,18 @@
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <math.h> 
 
 const int W_WIDTH = 500; // Tamaño incial de la viewport
 const int W_HEIGHT = 500;
 const int wMon = 2;
 const int hMon = 2;
+
+const float MAX_TOR_SIZE = 0.3f; 
+const float MIN_TOR_SIZE = 0.1f;
 GLfloat fAnguloFig1; // Variable que indica el ángulo de rotación de los ejes. 
+GLfloat escaladoToroide;
+bool aumentarToroide = true; 
 GLfloat fAnguloFig2;
 GLfloat fAnguloFig3;
 GLfloat fAnguloFig4;
@@ -64,7 +70,7 @@ void Display(void)
 
 	//Primera figura (Triangulo).
 	glPushMatrix();
-
+	
 	glTranslatef(-0.5, 0.5, 0);
 	glRotatef(fAnguloFig1, 0.0f, 0.5f, 0.0f);
 	glScalef(0.5, 0.5, 0.0);
@@ -96,7 +102,7 @@ void Display(void)
 
 	//Configuración inicial.
 	glTranslatef(-0.5, -0.5, 0);
-	glScalef(0.2, 0.2, 0.0);
+	glScalef(escaladoToroide, escaladoToroide, 0.0);
 	glRotated(40, 0.5, 0.7, 0.0);
 	glRotatef(fAnguloFig3, 0.8f, 0.0f, 0.5f);
 	glColor3f(0.0f, 0.30f, 0.30f);
@@ -116,7 +122,7 @@ void Display(void)
 	glColor3f(0.0f, 0.30f, 0.30f);
 
 	//Dibujado de la figura. 
-	glBegin(GL_QUADS);
+	glBegin(GL_POLYGON);
 	glColor3f(1.0f, 0.5f, 0.4f);
 	glVertex2f(0.5, 0.5);
 	glVertex2f(-0.5, -0.5);
@@ -139,7 +145,23 @@ GLfloat decrementarAngulo(GLfloat angulo) {
 
 // Función que se ejecuta cuando el sistema no esta ocupado
 void Idle(void)
-{
+{	
+	//Escalado toroide
+
+	if (escaladoToroide >= MAX_TOR_SIZE) {
+		aumentarToroide = false; 
+	}
+
+	if (escaladoToroide <= MIN_TOR_SIZE) {
+		aumentarToroide = true; 
+	}
+
+	if (aumentarToroide) {
+		escaladoToroide += 0.001f; 
+	} else {
+		escaladoToroide -= 0.001f; 
+	}
+
 	// Incrementamos el ángulo
 	fAnguloFig1 += 1.0f;
 	fAnguloFig2 += 3.0f;
@@ -169,7 +191,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
 	// Creamos la nueva ventana
-	glutCreateWindow("Etapa 2 - Péndulo");
+	glutCreateWindow("Etapa 2 - Primitivas2D");
 
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
