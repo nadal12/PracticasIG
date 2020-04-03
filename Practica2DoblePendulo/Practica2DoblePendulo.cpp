@@ -200,6 +200,7 @@ void calcular() {
 	den = longitud_corda2 * (2 * m1 + m2 - m2 * cos(2 * angle - 2 * angle2));
 	aAcc2 = (num1 * (num2 + num3 + num4)) / den;
 }
+
 void Display(void)
 {
 	//Borram l'escena
