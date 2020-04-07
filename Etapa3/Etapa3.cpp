@@ -24,9 +24,9 @@ void draw_grid(int n, int d)
 	for (i = 0; i <= (n * 2) + 1; i++) {
 		glPushMatrix();
 		//La mitad se dibujan paralelas al eje x
-		if (i <= n) { glTranslatef(0, 0, i * d); }
+		if (i <= n) { glTranslatef(0, 0, i*d); }
 		//La otra mitad se dibujan paralelas al eje z
-		if (i > n) { glTranslatef((i - n - 1) * d, 0, 0); glRotatef(-90, 0, 1, 0); }
+		if (i > n) { glTranslatef((i - n - 1)*d, 0, 0); glRotatef(-90, 0, 1, 0); }
 		glBegin(GL_LINES);
 		glVertex3f(0, -0.1, 0); glVertex3f(n, -0.1, 0);
 		glEnd();
@@ -96,10 +96,10 @@ void draw_pendulum(int size) {
 	glTranslatef(0.0, 16.0, 0.0);
 
 	//Repite el bucle segun la cantidad de niveles indicados
-	for (GLfloat i = 0.0; i < (size + 1) * 0.5; i = i + 0.5)
+	for (GLfloat i = 0.0; i < (size + 1)*0.5; i = i + 0.5)
 	{
 		//Rota el nuevo nivel
-		glRotatef(fAngPen * i, 0.0, 0.0, 1.0);
+		glRotatef(fAngPen*i, 0.0, 0.0, 1.0);
 		//Baja el nuevo nivel
 		glTranslatef(0.0, -8.0, 0.0);
 
@@ -125,7 +125,7 @@ void Display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	//Desplazamos camara
-	gluLookAt(0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	gluLookAt(2.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 	glPushMatrix();
 	glTranslatef(-10.0, -1.0, -15.0);
@@ -152,10 +152,10 @@ void Idle(void)
 	fAngTorus += 0.1 * directionTorus;
 
 	//Si el angulo excede el deseado cambiamos la direccion
-	if (fAngPen > 30.0) {
+	if (fAngPen>30.0) {
 		directionPen = -1.0;
 	}
-	if (fAngPen < -30.0) {
+	if (fAngPen<-30.0) {
 		directionPen = 1.0;
 	}
 	//Aumentamos el angulo en la direccion deseada
@@ -201,7 +201,7 @@ void reshape(int w, int h)
 	}
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 
