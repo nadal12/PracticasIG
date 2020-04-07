@@ -2,15 +2,17 @@
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <math.h> 
 
 const int W_WIDTH = 500; // Tamaño incial de la viewport
 const int W_HEIGHT = 500;
 const int wMon = 2;
 const int hMon = 2;
 
-const float MAX_TOR_SIZE = 0.3f; 
-const float MIN_TOR_SIZE = 0.1f;
+const float MAX_HEX_SIZE = 0.8f; 
+const float MIN_HEX_SIZE = 0.3f;
+float traslacionQuadrado = 0; 
+bool moverDerecha = true; 
+
 GLfloat fAnguloFig1; // Variable que indica el ángulo de rotación de los ejes. 
 GLfloat escaladoToroide;
 bool aumentarToroide = true; 
@@ -83,32 +85,55 @@ void Display(void)
 	glEnd();
 	glPopMatrix();
 
-	//Segunda figura (Cono). 
+	//Segunda figura. 
 	glPushMatrix();
 
 	//Configuración inicial.
-	glTranslatef(0.5, 0.5, 0);
+	glTranslatef(0.5, 0.55, 0);
 	glScalef(0.5, 0.5, 0.0);
-	glRotated(70, 0, 0.5, 0.5);
-	glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
-	glColor3f(0.0f, 0.0f, 0.25f);
+	//glRotated(70, 0, 0.5, 0.5);
+	glRotatef(fAnguloFig2, 0.0f, 0.0f, 0.5f);
+	glColor3f(1.0f, 0.0f, 0.25f);
 
 	//Dibujado de la figura. 
-	glutWireCone(0.5, 1, 25, 25);
+	glBegin(GL_TRIANGLES);
+	glVertex3f(0, 0.5, 0);
+	glVertex3f(0.5, -0.5, 0);
+	glVertex3f(-0.5, -0.5, 0);
+	glEnd();
+
+	glTranslatef(0.0, -0.3, 0);
+	glRotatef(180, 0.0, 0.0, 1.0);
+	glBegin(GL_TRIANGLES);
+	glVertex3f(0, 0.5, 0);
+	glVertex3f(0.5, -0.5, 0);
+	glVertex3f(-0.5, -0.5, 0);
+	glEnd();
 	glPopMatrix();
 
-	//Tercera figura (toroide)
+	//Tercera figura
 	glPushMatrix();
 
 	//Configuración inicial.
 	glTranslatef(-0.5, -0.5, 0);
 	glScalef(escaladoToroide, escaladoToroide, 0.0);
-	glRotated(40, 0.5, 0.7, 0.0);
-	glRotatef(fAnguloFig3, 0.8f, 0.0f, 0.5f);
-	glColor3f(0.0f, 0.30f, 0.30f);
+	glRotatef(fAnguloFig3, 0.0f, 0.0f, 1.0f);
 
-	//Dibujado de la figura. 
-	glutWireTorus(0.5, 1, 25, 25);
+	glBegin(GL_POLYGON);
+	glColor3f(0.0f, 0.30f, 0.30f);
+	glVertex3f(-0.2, 0.4, 0.0);
+	glColor3f(0.8f, 0.1f, 0.6f);
+	glVertex3f(0.2, 0.4, 0.0);
+	glVertex3f(0.4, 0.2, 0.0);
+	glVertex3f(0.4, -0.2, 0.0);
+	glColor3f(0.0f, 0.8f, 0.3f);
+	glVertex3f(0.2, -0.4, 0.0);
+	glColor3f(0.2f, 0.4f, 0.5f);
+	glVertex3f(-0.2, -0.4, 0.0);
+	glVertex3f(-0.4, -0.2, 0.0);
+	glVertex3f(-0.4, 0.2, 0.0);
+	glEnd();
+
 	glPopMatrix();
 
 	//Cuarta figura figura
@@ -116,19 +141,21 @@ void Display(void)
 
 	//Configuración inicial.
 	glTranslatef(0.5, -0.5, 0);
-	glScalef(0.5, 0.5, 0.5);
+	glScalef(0.3, 0.3, 0.3);
 	glRotated(5, 0.0, 0.7, 0.5);
 	glRotatef(fAnguloFig4, 0.2f, 0.0f, 0.1f);
-	glColor3f(0.0f, 0.30f, 0.30f);
+	glTranslatef(traslacionQuadrado, 0.0, 0);
 
 	//Dibujado de la figura. 
-	glBegin(GL_POLYGON);
-	glColor3f(1.0f, 0.5f, 0.4f);
-	glVertex2f(0.5, 0.5);
-	glVertex2f(-0.5, -0.5);
-	glVertex2f(0.5, -0.5);
+	glBegin(GL_QUADS);
+	glColor3f(0.3f, 0.8f, 0.2f);
 	glVertex2f(-0.5, 0.5);
+	glVertex2f(0.5, 0.5);
+	glVertex2f(0.5, -0.5);
+	glVertex2f(-0.5, -0.5);
 	glEnd();
+
+
 
 	glPopMatrix();
 
@@ -146,27 +173,42 @@ GLfloat decrementarAngulo(GLfloat angulo) {
 // Función que se ejecuta cuando el sistema no esta ocupado
 void Idle(void)
 {	
-	//Escalado toroide
-
-	if (escaladoToroide >= MAX_TOR_SIZE) {
+	//Escalado hexagono
+	if (escaladoToroide >= MAX_HEX_SIZE) {
 		aumentarToroide = false; 
 	}
 
-	if (escaladoToroide <= MIN_TOR_SIZE) {
+	if (escaladoToroide <= MIN_HEX_SIZE) {
 		aumentarToroide = true; 
 	}
 
 	if (aumentarToroide) {
-		escaladoToroide += 0.001f; 
+		escaladoToroide += 0.003f; 
 	} else {
-		escaladoToroide -= 0.001f; 
+		escaladoToroide -= 0.003f; 
+	}
+
+	//Movimiento quadrado. 
+	if (traslacionQuadrado >= 0.8) {
+		moverDerecha = false;
+	}
+
+	if (traslacionQuadrado <= -0.8) {
+		moverDerecha = true;
+	}
+
+	if (moverDerecha) {
+		traslacionQuadrado += 0.008f;
+	}
+	else {
+		traslacionQuadrado -= 0.008f;
 	}
 
 	// Incrementamos el ángulo
 	fAnguloFig1 += 1.0f;
-	fAnguloFig2 += 3.0f;
+	fAnguloFig2 += 1.2f;
 	fAnguloFig3 += 0.5f;
-	fAnguloFig4 += 0.1f;
+	fAnguloFig4 += 0.3f;
 
 	fAnguloFig1 = decrementarAngulo(fAnguloFig1);
 	fAnguloFig2 = decrementarAngulo(fAnguloFig2);
