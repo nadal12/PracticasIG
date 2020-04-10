@@ -96,9 +96,17 @@ void Display(void)
 		break;
 	case 4:
 		glPushMatrix();
+		glScalef(0.3, 0.3, 1);
+		glRotated(0, 0, 0.5, 0);
+		glRotatef(fAnguloFig2, 0.0f, 3.0f, -0.2f);
+		glColor3f(0.0f, 0.0f, 0.25f);
+		glutSolidOctahedron();
+		glPopMatrix();
+
+		glPushMatrix();
 		glScalef(0.5, 0.5, 0.0);
-		glRotated(70, 0, 0.5, 0.5);
-		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glRotated(0, 0, 0.5,0);
+		glRotatef(fAnguloFig2, 0.0f, 3.0f, -0.2f);
 		glColor3f(0.0f, 0.0f, 0.25f);
 		glutWireOctahedron();
 		glPopMatrix();
@@ -135,10 +143,19 @@ void Display(void)
 		glPushMatrix();
 		glScalef(0.5, 0.5, 0.0);
 		glRotated(70, 0, 0.5, 0.5);
-		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
-		glColor3f(0.0f, 1.0f, 0.25f);
+		glRotatef(fAnguloFig2, 0.3f, 1.0f, 0.5f);
+		glColor3f(0.0f, 0.33f, 0.25f);
+		glutSolidTeapot(0.5);
+		glPopMatrix();
+
+		glPushMatrix();
+		glScalef(0.7, 0.7, 0.0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 1.0f, 0.5f);
+		glColor3f(0.0f, 0, 0);
 		glutWireTeapot(0.5);
 		glPopMatrix();
+
 		break;
 	}
 	
