@@ -1,224 +1,262 @@
+#include "iostream"
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <math.h> 
 
-#include <math.h>
-
-//Dimensiones pantalla
-const int W_WIDTH = 500;
+const int W_WIDTH = 500; // Tamaño incial de la viewport
 const int W_HEIGHT = 500;
+const int wMon = 2;
+const int hMon = 2;
 
-GLfloat fAngTorus; //Angulo rotacion torus
-GLfloat fAngPen; //Angulo rotacion pendulo
+const float MAX_TOR_SIZE = 0.3f;
+const float MIN_TOR_SIZE = 0.1f;
+GLfloat fAnguloFig1; // Variable que indica el ángulo de rotación de los ejes. 
+GLfloat escaladoToroide;
+bool aumentarToroide = true;
+GLfloat fAnguloFig2;
+GLfloat fAnguloFig3;
+GLfloat fAnguloFig4;
+int num = 0;
 
-static float directionTorus = 1.0; //Direccion de rotacion torus
-static float directionPen = 1.0; //Direccion de rotacion pendulo
+void reshape(int w, int h) {
 
-								 //Dibuja la rejilla
-void draw_grid(int n, int d)
-{
-	int i;
-	glPushMatrix();
-	glLineWidth(1); //Cambiamos ancho de la linea
-	glColor3f(1, 1, 1); //Color de la linea
-	for (i = 0; i <= (n * 2) + 1; i++) {
-		glPushMatrix();
-		//La mitad se dibujan paralelas al eje x
-		if (i <= n) { glTranslatef(0, 0, i*d); }
-		//La otra mitad se dibujan paralelas al eje z
-		if (i > n) { glTranslatef((i - n - 1)*d, 0, 0); glRotatef(-90, 0, 1, 0); }
-		glBegin(GL_LINES);
-		glVertex3f(0, -0.1, 0); glVertex3f(n, -0.1, 0);
-		glEnd();
-		glPopMatrix();
+	if (h == 0) { //per no fer divisions per 0
+		h = 1;
 	}
-	glPopMatrix();
-}
 
-//Dibuja los cubos del fondo
-void draw_cubes() {
-	//Arriba izquierda
-	glPushMatrix();
-	glTranslatef(-0.5, 0.5, -1.0);
-	glPushMatrix();
-	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
-	glTranslatef(0.0, 0.0, 0.5);
-	glColor3ub(155, 222, 237);
-	glutWireTorus(0.2, 0.3, 6, 20);
-	glPopMatrix();
-	glColor3ub(43, 181, 228);
-	glutSolidCube(1.0);
-	glPopMatrix();
+	float aspecRatioW = (float)wMon / (float)hMon; //aspect ratio del Window
+	float aspectRatioV = (float)w / (float)h;	//aspect ratio del viewport 
 
-	//Arriba derecha
-	glPushMatrix();
-	glTranslatef(0.5, 0.5, 0.0);
-	glPushMatrix();
-	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
-	glTranslatef(0.0, 0.0, 0.5);
-	glColor3ub(185, 77, 155);
-	glutWireTorus(0.2, 0.3, 6, 20);
-	glPopMatrix();
-	glColor3ub(245, 229, 55);
-	glutSolidCube(1.0);
-	glPopMatrix();
-
-	//Abajo izquierda
-	glPushMatrix();
-	glTranslatef(-0.5, -0.5, 0.0);
-	glPushMatrix();
-	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
-	glTranslatef(0.0, 0.0, 0.5);
-	glColor3ub(252, 217, 51);
-	glutWireTorus(0.2, 0.3, 6, 20);
-	glPopMatrix();
-	glColor3ub(233, 38, 137);
-	glutSolidCube(1.0);
-	glPopMatrix();
-
-	//Abajo derecha
-	glPushMatrix();
-	glTranslatef(0.5, -0.5, -1.0);
-	glPushMatrix();
-	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
-	glTranslatef(0.0, 0.0, 0.5);
-	glColor3ub(235, 54, 49);
-	glutWireTorus(0.2, 0.3, 6, 20);
-	glPopMatrix();
-	glColor3ub(196, 219, 115);
-	glutSolidCube(1.0);
-	glPopMatrix();
-}
-
-//Dibuja el pendulo
-void draw_pendulum(int size) {
-	glScalef(0.1, 0.1, 0.1);
-	glTranslatef(0.0, 16.0, 0.0);
-
-	//Repite el bucle segun la cantidad de niveles indicados
-	for (GLfloat i = 0.0; i < (size + 1)*0.5; i = i + 0.5)
+	if (aspectRatioV > aspecRatioW)
+		//ViewPort major que aspect (aWin) de la regió  
 	{
-		//Rota el nuevo nivel
-		glRotatef(fAngPen*i, 0.0, 0.0, 1.0);
-		//Baja el nuevo nivel
-		glTranslatef(0.0, -8.0, 0.0);
-
-		glPushMatrix();
-		glRotatef(60, 1.0, 1.0, 0.0);
-		glRotatef(fAngTorus, 0.0, 1.0, 0.0);
-		glutSolidTetrahedron();
-		glutSolidTetrahedron();
-		glPopMatrix();
-
-		//Dibuja linea del pendulo
-		if (i != 0) {
-			glBegin(GL_LINES);
-			glVertex3f(0.0, 0.0, 0.0);
-			glVertex3f(0.0, 8.0, 0.0);
-			glEnd();
-		}
+		//Amplada nova = Amplada anterior * (aViewPort / aWindow)
+		//0 -+ i /2 para centrarlo
+		glLoadIdentity();
+		glOrtho((GLdouble)0 - (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble)0 + (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble)-hMon / 2, (GLdouble)hMon / 2, (GLdouble)-1.0, (GLdouble)1.0f);
 	}
+	else
+	{
+
+		//Altura nova = Amplada Anterior * (aViewPort / aWindow)
+		//Posam 0 -+ perque estigui centrat
+		glLoadIdentity();
+		glOrtho((GLdouble)-wMon / 2, wMon / 2, (GLdouble)0 - hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble)0 + hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble)-1.0, (GLdouble)1.0f);
+	}
+	glViewport(0, 0, w, h); //Pintam segons es canvi des viewport
 }
 
+// Función que visualiza la escena OpenGL
 void Display(void)
 {
+	glEnable(GL_DEPTH_TEST);
+	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	//Desplazamos camara
-	gluLookAt(2.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-	glPushMatrix();
-	glTranslatef(-10.0, -1.0, -15.0);
-	draw_grid(20, 1);
-	glPopMatrix();
+	
+	switch (num)
+	{
+	case 0:
+		glPushMatrix();
+		glScalef(0.5, 0.5, 0.0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glColor3f(0.0f, 0.0f, 0.25f);
+		glutWireCube(0.5);
+		glPopMatrix();
+		
+		break;
+	case 1:
+		glPushMatrix();
+		glScalef(0.5, 0.5, 0.0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glColor3f(0.0f, 0.0f, 0.25f);
+		glutWireCone(0.5, 1, 25, 25);
+		glPopMatrix();
+		break;
+	case 2:
+		glPushMatrix();
+		glScalef(0.5, 0.5, 0.0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glColor3f(0.0f, 1.0f, 0.25f);
+		glutWireTorus(0.5, 1, 25, 25);
+		glPopMatrix();
+		break;
+	case 3:
+		glPushMatrix();
+		glScalef(0.5, 0.5, 0.0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glColor3f(0.0f, 0.0f, 0.25f);
+		glutWireDodecahedron();
+		glPopMatrix();
+		break;
+	case 4:
+		glPushMatrix();
+		glScalef(0.5, 0.5, 0.0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glColor3f(0.0f, 0.0f, 0.25f);
+		glutWireOctahedron();
+		glPopMatrix();
+		break;
+	case 5:
+		glPushMatrix();
+		glScalef(0.5, 0.5, 0.0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glColor3f(0.0f, 0.0f, 0.25f);
+		glutWireTetrahedron();
+		glPopMatrix();
+		break;
+	case 6:
+		glPushMatrix();
+		glTranslatef(0.5, 0, 0);
+		glScalef(0.3, 0.3, 0.0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glColor3f(0.0f, 0.0f, 0.25f);
+		glutWireIcosahedron();
+		glPopMatrix();
 
-	glPushMatrix();
-	glTranslatef(0.0, 0.0, -1.0);
-	draw_cubes();
-	glPopMatrix();
-
-	glPushMatrix();
-	glColor3ub(255, 255, 255);
-	draw_pendulum(2);
-	glPopMatrix();
-
+		glPushMatrix();
+		glScalef(0.5, 0.5, 0.0);
+		glTranslatef(-0.5,0, 0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glColor3f(0.0f, 0.0f, 0.25f);
+		glutSolidIcosahedron();
+		glPopMatrix();
+		break;
+	case 7:
+		glPushMatrix();
+		glScalef(0.5, 0.5, 0.0);
+		glRotated(70, 0, 0.5, 0.5);
+		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+		glColor3f(0.0f, 1.0f, 0.25f);
+		glutWireTeapot(0.5);
+		glPopMatrix();
+		break;
+	}
+	
+		//Cambio entre el backbuffer y el frontbuffer.
 	glutSwapBuffers();
-	glFlush();
 }
 
+GLfloat decrementarAngulo(GLfloat angulo) {
+	if (angulo > 360) {
+		angulo -= 360;
+	}
+	return angulo;
+}
+
+// Función que se ejecuta cuando el sistema no esta ocupado
 void Idle(void)
 {
-	//Incrementamos el angulo de rotacion
-	fAngTorus += 0.1 * directionTorus;
-
-	//Si el angulo excede el deseado cambiamos la direccion
-	if (fAngPen>30.0) {
-		directionPen = -1.0;
+	if (num==-1)
+	{
+		num = 7;
 	}
-	if (fAngPen<-30.0) {
-		directionPen = 1.0;
+	else if (num == 8)
+	{
+		num = 0;
 	}
-	//Aumentamos el angulo en la direccion deseada
-	fAngPen += 0.1 * directionPen;
+	//Escalado toroide
 
+	if (escaladoToroide >= MAX_TOR_SIZE) {
+		aumentarToroide = false;
+	}
+
+	if (escaladoToroide <= MIN_TOR_SIZE) {
+		aumentarToroide = true;
+	}
+
+	if (aumentarToroide) {
+		escaladoToroide += 0.001f;
+	}
+	else {
+		escaladoToroide -= 0.001f;
+	}
+
+	// Incrementamos el ángulo
+	fAnguloFig1 += 1.0f;
+	fAnguloFig2 += 3.0f;
+	fAnguloFig3 += 0.5f;
+	fAnguloFig4 += 0.1f;
+
+	fAnguloFig1 = decrementarAngulo(fAnguloFig1);
+	fAnguloFig2 = decrementarAngulo(fAnguloFig2);
+	fAnguloFig3 = decrementarAngulo(fAnguloFig3);
+	fAnguloFig4 = decrementarAngulo(fAnguloFig4);
+
+	// Indicamos que es necesario repintar la pantalla
 	glutPostRedisplay();
 }
 
-void Special_Keys(int key, int x, int y)
-{
+
+void controlTeclado(unsigned char key, int x, int y) {
 	switch (key) {
-	case GLUT_KEY_RIGHT:  directionTorus = 1.0;  break; //Cambia direccón de rotacion
-	case GLUT_KEY_LEFT:  directionTorus = -1.0;  break; //Cambia direccón de rotacion
-	default:;
+	case GLUT_KEY_RIGHT:
+		num = num + 1;
+		break;
+	}
+	glutPostRedisplay();
+}
+void SpecialInput(int key, int x, int y)
+{
+	switch (key)
+	{
+	case GLUT_KEY_UP:
+		
+		break;
+	case GLUT_KEY_DOWN:
+		
+		break;
+	case GLUT_KEY_LEFT:
+		num = num - 1;
+		break;
+	case GLUT_KEY_RIGHT:
+		num = num + 1;
+		break;
 	}
 
 	glutPostRedisplay();
 }
 
-void reshape(int w, int h)
+// Función principal
+int main(int argc, char** argv)
 {
-	if (w < W_HEIGHT || h < W_HEIGHT) { //Caso en que se encoje la ventana
-		int wn = w, hn = h;
-		if (w < h) //Escogemos la dimensión mas pequea
-		{
-			hn = W_HEIGHT * w / W_HEIGHT;
-		}
-		else {
-			wn = W_WIDTH * h / W_HEIGHT;
-		}
-		glViewport(w / 2 - wn / 2, h / 2 - hn / 2, wn, hn);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glFrustum(-1.0, 1.0, -1.0, 1.0, 2.0, 30.0);
-		glMatrixMode(GL_MODELVIEW);
-	}
-	else { //Si la ventana no es menor al tamao original
-		glViewport(w / 2 - W_WIDTH / 2, h / 2 - W_HEIGHT / 2, W_WIDTH, W_HEIGHT);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glFrustum(-1.0, 1.0, -1.0, 1.0, 2.0, 30.0);
-		glMatrixMode(GL_MODELVIEW);
-	}
-}
-
-int main(int argc, char **argv)
-{
+	// Inicializamos la librería GLUT
 	glutInit(&argc, argv);
 
+	// Indicamos como ha de ser la nueva ventana
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(W_WIDTH, W_HEIGHT);
+
+	//Se habilita el doblebuffer con el comando "GLUT_DOUBLE". 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
-	glutCreateWindow("Etapa 3");
+	// Creamos la nueva ventana
+	glutCreateWindow("Etapa 2 - Primitivas2D");
 
+	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
-	glutSpecialFunc(Special_Keys);
+	glutKeyboardFunc(controlTeclado);
+	glutSpecialFunc(SpecialInput);
+	//Se indica cual es la función de reshape.
 	glutReshapeFunc(reshape);
 
-	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.1, 0.1, 0.1, 1.0);
+	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	//glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
+	//La sintaxi és glOrtho(x min, x max, y min, y max, z1, z2)
 
+
+	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
 	return 0;
 }

@@ -295,5 +295,6 @@ int main(int argc, char** argv)
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
+
 	return 0;
 }
