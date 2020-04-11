@@ -4,14 +4,14 @@
 #include <GL/glu.h>
 #include <math.h> 
 
-const int W_WIDTH = 500; // Tama√±o incial de la viewport
+const int W_WIDTH = 500; // TamaÒo incial de la viewport
 const int W_HEIGHT = 500;
 const int wMon = 2;
 const int hMon = 2;
 
 const float MAX_TOR_SIZE = 0.3f;
 const float MIN_TOR_SIZE = 0.1f;
-GLfloat fAnguloFig1; // Variable que indica el √°ngulo de rotaci√≥n de los ejes. 
+GLfloat fAnguloFig1; // Variable que indica el ·ngulo de rotaciÛn de los ejes. 
 GLfloat escaladoToroide;
 bool aumentarToroide = true;
 GLfloat fAnguloFig2;
@@ -29,7 +29,7 @@ void reshape(int w, int h) {
 	float aspectRatioV = (float)w / (float)h;	//aspect ratio del viewport 
 
 	if (aspectRatioV > aspecRatioW)
-		//ViewPort major que aspect (aWin) de la regi√≥  
+		//ViewPort major que aspect (aWin) de la regiÛ  
 	{
 		//Amplada nova = Amplada anterior * (aViewPort / aWindow)
 		//0 -+ i /2 para centrarlo
@@ -47,14 +47,14 @@ void reshape(int w, int h) {
 	glViewport(0, 0, w, h); //Pintam segons es canvi des viewport
 }
 
-// Funci√≥n que visualiza la escena OpenGL
+// FunciÛn que visualiza la escena OpenGL
 void Display(void)
 {
 	glEnable(GL_DEPTH_TEST);
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	
+
 	switch (num)
 	{
 	case 0:
@@ -65,7 +65,7 @@ void Display(void)
 		glColor3f(0.0f, 0.0f, 0.25f);
 		glutWireCube(0.5);
 		glPopMatrix();
-		
+
 		break;
 	case 1:
 		glPushMatrix();
@@ -105,7 +105,7 @@ void Display(void)
 
 		glPushMatrix();
 		glScalef(0.5, 0.5, 0.0);
-		glRotated(0, 0, 0.5,0);
+		glRotated(0, 0, 0.5, 0);
 		glRotatef(fAnguloFig2, 0.0f, 3.0f, -0.2f);
 		glColor3f(0.0f, 0.0f, 0.25f);
 		glutWireOctahedron();
@@ -132,7 +132,7 @@ void Display(void)
 
 		glPushMatrix();
 		glScalef(0.5, 0.5, 0.0);
-		glTranslatef(-0.5,0, 0);
+		glTranslatef(-0.5, 0, 0);
 		glRotated(70, 0, 0.5, 0.5);
 		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
 		glColor3f(0.0f, 0.0f, 0.25f);
@@ -158,8 +158,8 @@ void Display(void)
 
 		break;
 	}
-	
-		//Cambio entre el backbuffer y el frontbuffer.
+
+	//Cambio entre el backbuffer y el frontbuffer.
 	glutSwapBuffers();
 }
 
@@ -170,10 +170,10 @@ GLfloat decrementarAngulo(GLfloat angulo) {
 	return angulo;
 }
 
-// Funci√≥n que se ejecuta cuando el sistema no esta ocupado
+// FunciÛn que se ejecuta cuando el sistema no esta ocupado
 void Idle(void)
 {
-	if (num==-1)
+	if (num == -1)
 	{
 		num = 7;
 	}
@@ -198,7 +198,7 @@ void Idle(void)
 		escaladoToroide -= 0.001f;
 	}
 
-	// Incrementamos el √°ngulo
+	// Incrementamos el ·ngulo
 	fAnguloFig1 += 1.0f;
 	fAnguloFig2 += 3.0f;
 	fAnguloFig3 += 0.5f;
@@ -227,10 +227,10 @@ void SpecialInput(int key, int x, int y)
 	switch (key)
 	{
 	case GLUT_KEY_UP:
-		
+
 		break;
 	case GLUT_KEY_DOWN:
-		
+
 		break;
 	case GLUT_KEY_LEFT:
 		num = num - 1;
@@ -243,10 +243,10 @@ void SpecialInput(int key, int x, int y)
 	glutPostRedisplay();
 }
 
-// Funci√≥n principal
+// FunciÛn principal
 int main(int argc, char** argv)
 {
-	// Inicializamos la librer√≠a GLUT
+	// Inicializamos la librerÌa GLUT
 	glutInit(&argc, argv);
 
 	// Indicamos como ha de ser la nueva ventana
@@ -257,23 +257,23 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
 	// Creamos la nueva ventana
-	glutCreateWindow("Etapa 2 - Primitivas2D");
+	glutCreateWindow("Etapa 3 - Primitivas3D");
 
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
 	glutKeyboardFunc(controlTeclado);
 	glutSpecialFunc(SpecialInput);
-	//Se indica cual es la funci√≥n de reshape.
+	//Se indica cual es la funciÛn de reshape.
 	glutReshapeFunc(reshape);
 
-	// El color de fondo ser√° el negro (RGBA, RGB + Alpha channel)
+	// El color de fondo ser· el negro (RGBA, RGB + Alpha channel)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	//glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
-	//La sintaxi √©s glOrtho(x min, x max, y min, y max, z1, z2)
+	//La sintaxi Ès glOrtho(x min, x max, y min, y max, z1, z2)
 
 
-	// Comienza la ejecuci√≥n del core de GLUT
+	// Comienza la ejecuciÛn del core de GLUT
 	glutMainLoop();
 	return 0;
 }
