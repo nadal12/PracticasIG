@@ -1,7 +1,3 @@
-// Etapa2.cpp
-// Fichero principal 
-////////////////////////////////////////////////////
-
 #include "iostream"
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -45,72 +41,22 @@ void reshape(int w, int h) {
 // Función que visualiza la escena OpenGL
 void Display(void)
 {
-	// Borramos la escena
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glPushMatrix();
+	glScalef(0.5, 0.5, 0.0);
+	glTranslatef(-0.6, 0, 0);
+	glRotated(70, 0, 0.5, 0.5);
+	glColor3f(0.0f, 0.0f, 0.25f);
+	glutSolidTetrahedron();
+	glPopMatrix();
 
-	//Pintar ejes de coordenadas
-	glBegin(GL_LINES);     // pintar los ejes X
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.0f, 0.0f);
-	glEnd();
-
-	glBegin(GL_LINES); // pintar los ejes Y
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 1.0f, 0.0f);
-	glEnd();
-
-	// Rotamos las proximas primitivas
-	glRotatef(fAngulo, 0.0f, 0.0f, 1.0f);
-
-
-	// Creamos a continuación dibujamos los tres poligonos
-	glBegin(GL_POLYGON);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.0f, 0.0f);
-	glColor3f(0.0f, 1.0f, 1.0f);
-	glVertex3f(-0.5f, 0.866f, 0.0f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(1.0f, 0.0f, 0.0f);
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-0.5f, -0.866f, 0.0f);
-	glEnd();
-
-	glBegin(GL_POLYGON);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-	glColor3f(0.0f, 1.0f, 1.0f);
-	glVertex3f(-0.5f, 0.866f, 0.0f);
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-0.5f, -0.866f, 0.0f);
-	glEnd();
-
-	//Se hace un escalado reduciendo el tamaño un 70% para el dibujado del cuadrado. 
-	glScalef(0.3f, 0.3f, 0.3f);
-
-	//Cuadrado. 
-	glBegin(GL_QUADS);
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(0.5, -0.5, 0.0);
-	glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(0.5, 0.5, 0.0);
-	glColor3f(0.0, 0.0, 1.0);
-	glVertex3f(-0.5, 0.5, 0.0);
-	glColor3f(1.0, 0.0, 1.0);
-	glVertex3f(-0.5, -0.5, 0.0);
-
-	glEnd();
-
+	glPushMatrix();
+	glTranslatef(0.6, 0, 1.0);
+	glScalef(0.7, 0.7, 0.0);
+	glRotated(70, 0, 0.5, 0.5);
+	glColor3f(0.0f, 0, 0);
+	glutWireTeapot(0.5);
 	glPopMatrix();
 
 	//Cambio entre el backbuffer y el frontbuffer.
@@ -129,6 +75,10 @@ void Idle(void)
 	glutPostRedisplay();
 }
 
+void keyboard(unsigned char key, int x, int y) {
+
+
+}
 
 // Función principal
 int main(int argc, char** argv)
@@ -141,8 +91,10 @@ int main(int argc, char** argv)
 	glutInitWindowSize(W_WIDTH, W_HEIGHT);
 
 	//Se habilita el doblebuffer con el comando "GLUT_DOUBLE". 
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	glEnable(GL_DEPTH_TEST);
 
+	//glutKeyboardFunc(keyboard);
 	// Creamos la nueva ventana
 	glutCreateWindow("Etapa 4 - Movimiento de cámara");
 
