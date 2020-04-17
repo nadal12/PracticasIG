@@ -54,8 +54,11 @@ void Display(void)
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0, 0.0, .0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+	//Ver como funciona gluLookAt en: https://youtu.be/bmQmme9jKTc?t=315
+	gluLookAt(0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 	glBegin(GL_LINES);     // pintar los ejes X
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -73,10 +76,7 @@ void Display(void)
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 1.0f);
-	glEnd();
-
-	
-	
+	glEnd();	
 
 	switch (num)
 	{

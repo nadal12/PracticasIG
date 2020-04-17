@@ -97,6 +97,7 @@ void Display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	//Desplazamos camara
+	//Ver como funciona gluLookAt en: https://youtu.be/bmQmme9jKTc?t=315
 	gluLookAt(0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 	glPushMatrix();
