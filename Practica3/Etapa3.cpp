@@ -54,6 +54,29 @@ void Display(void)
 	// Borramos la escena
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glLoadIdentity();
+	gluLookAt(0.0, 0.0, .0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+	glBegin(GL_LINES);     // pintar los ejes X
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glEnd();
+
+	glBegin(GL_LINES); // pintar los ejes Y
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glEnd();
+
+	glBegin(GL_LINES); // pintar los ejes Z
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glEnd();
+
+	
+	
 
 	switch (num)
 	{
@@ -143,6 +166,7 @@ void Display(void)
 		glPushMatrix();
 		glScalef(0.5, 0.5, 0.0);
 		glRotated(70, 0, 0.5, 0.5);
+		glTranslated(0, 0, -1);
 		glRotatef(fAnguloFig2, 0.3f, 1.0f, 0.5f);
 		glColor3f(0.0f, 0.33f, 0.25f);
 		glutSolidTeapot(0.5);

@@ -1,21 +1,168 @@
-#include "iostream"
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-const int W_WIDTH = 500; // Tamaño incial de la viewport
+#include <math.h>
+
+//Dimensiones pantalla
+const int W_WIDTH = 500;
 const int W_HEIGHT = 500;
-const int wMon = 2;
-const int hMon = 2;
-GLfloat fAngulo; // Variable que indica el ángulo de rotación de los ejes. 
+
+GLfloat fAngTorus; //Angulo rotacion torus
+
+static float directionTorus = 1.0; //Direccion de rotacion torus
 
 
-void reshape(int w, int h) {
+								 //Dibuja la rejilla
+void draw_grid(int n, int d)
+{
+	int i;
+	glPushMatrix();
+	glLineWidth(1); //Cambiamos ancho de la linea
+	glColor3f(1, 1, 1); //Color de la linea
+	for (i = 0; i <= (n * 2) + 1; i++) {
+		glPushMatrix();
+		//La mitad se dibujan paralelas al eje x
+		if (i <= n) { glTranslatef(0, 0, i * d); }
+		//La otra mitad se dibujan paralelas al eje z
+		if (i > n) { glTranslatef((i - n - 1) * d, 0, 0); glRotatef(-90, 0, 1, 0); }
+		glBegin(GL_LINES);
+		glVertex3f(0, -0.1, 0); glVertex3f(n, -0.1, 0);
+		glEnd();
+		glPopMatrix();
+	}
+	glPopMatrix();
+}
+
+//Dibuja los cubos del fondo
+/*
+void draw_cubes() {
+	//Arriba izquierda
+	glPushMatrix();
+	glTranslatef(-0.5, 0.5, -1.0);
+	glPushMatrix();
+	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
+	glTranslatef(0.0, 0.0, 0.5);
+	glColor3ub(155, 222, 237);
+	glutWireTorus(0.2, 0.3, 6, 20);
+	glPopMatrix();
+	glColor3ub(43, 181, 228);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	//Arriba derecha
+	glPushMatrix();
+	glTranslatef(0.5, 0.5, 0.0);
+	glPushMatrix();
+	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
+	glTranslatef(0.0, 0.0, 0.5);
+	glColor3ub(185, 77, 155);
+	glutWireTorus(0.2, 0.3, 6, 20);
+	glPopMatrix();
+	glColor3ub(245, 229, 55);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	//Abajo izquierda
+	glPushMatrix();
+	glTranslatef(-0.5, -0.5, 0.0);
+	glPushMatrix();
+	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
+	glTranslatef(0.0, 0.0, 0.5);
+	glColor3ub(252, 217, 51);
+	glutWireTorus(0.2, 0.3, 6, 20);
+	glPopMatrix();
+	glColor3ub(233, 38, 137);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	//Abajo derecha
+	glPushMatrix();
+	glTranslatef(0.5, -0.5, -1.0);
+	glPushMatrix();
+	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
+	glTranslatef(0.0, 0.0, 0.5);
+	glColor3ub(235, 54, 49);
+	glutWireTorus(0.2, 0.3, 6, 20);
+	glPopMatrix();
+	glColor3ub(196, 219, 115);
+	glutSolidCube(1.0);
+	glPopMatrix();
+}*/
+
+
+
+void Display(void)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	//Desplazamos camara
+	gluLookAt(0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+	glPushMatrix();
+	glTranslatef(-10.0, -1.0, -15.0);
+	draw_grid(20, 1);
+	glPopMatrix();
+
+	
+	glutSwapBuffers();
+	glFlush();
+}
+
+void Idle(void)
+{
+	//Incrementamos el angulo de rotacion
+	fAngTorus += 0.1 * directionTorus;
+
+
+	glutPostRedisplay();
+}
+
+void Special_Keys(int key, int x, int y)
+{
+	switch (key) {
+	case GLUT_KEY_RIGHT:  directionTorus = 1.0;  break; //Cambia direccón de rotacion
+	case GLUT_KEY_LEFT:  directionTorus = -1.0;  break; //Cambia direccón de rotacion
+	default:;
+	}
+
+	glutPostRedisplay();
+}
+
+void reshape(int w, int h)
+{
+	if (w < W_HEIGHT || h < W_HEIGHT) { //Caso en que se encoje la ventana
+		int wn = w, hn = h;
+		if (w < h) //Escogemos la dimensión mas pequea
+		{
+			hn = W_HEIGHT * w / W_HEIGHT;
+		}
+		else {
+			wn = W_WIDTH * h / W_HEIGHT;
+		}
+		glViewport(w / 2 - wn / 2, h / 2 - hn / 2, wn, hn);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glFrustum(-1.0, 1.0, -1.0, 1.0, 2.0, 30.0);
+		glMatrixMode(GL_MODELVIEW);
+	}
+	else { //Si la ventana no es menor al tamao original
+		glViewport(w / 2 - W_WIDTH / 2, h / 2 - W_HEIGHT / 2, W_WIDTH, W_HEIGHT);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glFrustum(-1.0, 1.0, -1.0, 1.0, 2.0, 30.0);
+		glMatrixMode(GL_MODELVIEW);
+	}
+}
+
+
+void reshape2(int w, int h) {
 
 	if (h == 0) { //per no fer divisions per 0
 		h = 1;
 	}
-
+	float wMon = 2;
+	float hMon = 2;
 	float aspecRatioW = (float)wMon / (float)hMon; //aspect ratio del Window
 	float aspectRatioV = (float)w / (float)h;	//aspect ratio del viewport 
 
@@ -38,81 +185,24 @@ void reshape(int w, int h) {
 	glViewport(0, 0, w, h); //Pintam segons es canvi des viewport
 }
 
-// Función que visualiza la escena OpenGL
-void Display(void)
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glPushMatrix();
-	glScalef(0.5, 0.5, 0.0);
-	glTranslatef(-0.6, 0, 0);
-	glRotated(70, 0, 0.5, 0.5);
-	glColor3f(0.0f, 0.0f, 0.25f);
-	glutSolidTetrahedron();
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0.6, 0, 1.0);
-	glScalef(0.7, 0.7, 0.0);
-	glRotated(70, 0, 0.5, 0.5);
-	glColor3f(0.0f, 0, 0);
-	glutWireTeapot(0.5);
-	glPopMatrix();
-
-	//Cambio entre el backbuffer y el frontbuffer.
-	glutSwapBuffers();
-}
-
-// Función que se ejecuta cuando el sistema no esta ocupado
-void Idle(void)
-{
-	// Incrementamos el ángulo
-	fAngulo += 1.0f;
-	// Si es mayor que dos pi la decrementamos
-	if (fAngulo > 360)
-		fAngulo -= 360;
-	// Indicamos que es necesario repintar la pantalla
-	glutPostRedisplay();
-}
-
-void keyboard(unsigned char key, int x, int y) {
-
-
-}
-
-// Función principal
 int main(int argc, char** argv)
 {
-	// Inicializamos la librería GLUT
 	glutInit(&argc, argv);
 
-	// Indicamos como ha de ser la nueva ventana
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(W_WIDTH, W_HEIGHT);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 
-	//Se habilita el doblebuffer con el comando "GLUT_DOUBLE". 
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-	glEnable(GL_DEPTH_TEST);
+	glutCreateWindow("Etapa 3");
 
-	//glutKeyboardFunc(keyboard);
-	// Creamos la nueva ventana
-	glutCreateWindow("Etapa 4 - Movimiento de cámara");
-
-
-	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
-
-	//Se indica cual es la función de reshape.
+	glutSpecialFunc(Special_Keys);
 	glutReshapeFunc(reshape);
 
-	// El color de fondo será el negro (RGBA, RGB + Alpha channel)
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
-	//La sintaxi és glOrtho(x min, x max, y min, y max, z1, z2)
+	glEnable(GL_DEPTH_TEST);
+	glClearColor(0.1, 0.1, 0.1, 1.0);
 
-
-	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
 	return 0;
 }
