@@ -52,14 +52,14 @@ void Display(void)
 
 	//Pintar ejes de coordenadas
 	glBegin(GL_LINES);     // pintar los ejes X
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(-1.0f, 0.0f, 0.0f);
 	glVertex3f(1.0f, 0.0f, 0.0f);
 	glEnd();
 
 	glBegin(GL_LINES); // pintar los ejes Y
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, -1.0f, 0.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 	glEnd();
 
@@ -108,12 +108,12 @@ void Display(void)
 	glVertex3f(-0.5, 0.5, 0.0);
 	glColor3f(1.0, 0.0, 1.0);     
 	glVertex3f(-0.5, -0.5, 0.0);
-
 	glEnd();
 	
 	glPopMatrix();
 
 	//Cambio entre el backbuffer y el frontbuffer.
+
 	glutSwapBuffers();
 }
 

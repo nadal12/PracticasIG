@@ -19,6 +19,7 @@ GLfloat fAnguloFig3;
 GLfloat fAnguloFig4;
 int num = 0;
 
+
 void reshape(int w, int h) {
 
 	if (h == 0) { //per no fer divisions per 0
@@ -58,31 +59,54 @@ void Display(void)
 	glLoadIdentity();
 
 	//Ver como funciona gluLookAt en: https://youtu.be/bmQmme9jKTc?t=315
-	gluLookAt(0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	gluLookAt(0.1, 0.1, 0.1, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0); // 3 primeres coord: eixos
+															// 3 segones coord: sa direcció on mira
+															// 3 terceres coord: es vector normal
 
-	glBegin(GL_LINES);     // pintar los ejes X
+	glBegin(GL_LINES);     // pintar los ejes X: vermell
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(1.0f, 0.0f, 0.0f);
 	glEnd();
 
-	glBegin(GL_LINES); // pintar los ejes Y
+	glBegin(GL_POLYGON);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.95f, 0.01f, 0.0f);
+	glVertex3f(0.95f, -0.01f, 0.0f);
+	glEnd();
+
+	glBegin(GL_LINES); // pintar los ejes Y: verd
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 	glEnd();
 
-	glBegin(GL_LINES); // pintar los ejes Z
+	glBegin(GL_POLYGON);
 	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.01f, 0.95f, -0.01f);
+	glVertex3f(-0.01f, 0.95f, 0.01f);
+	glEnd();
+
+	glBegin(GL_LINES); // pintar los ejes Z: blau
+	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 1.0f);
 	glEnd();	
 
-	switch (num)
+	glBegin(GL_POLYGON);
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.01f, 0.95f);
+	glVertex3f(0.0f, -0.01f, 0.95f);
+	glEnd();
+
+	switch (num) //Control canvi d'objecte desde teclat
 	{
 	case 0:
 		glPushMatrix();
-		glScalef(0.5, 0.5, 0.0);
+		glScalef(0.5, 0.5, 0.5);
 		glRotated(70, 0, 0.5, 0.5);
 		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
 		glColor3f(0.0f, 0.0f, 0.25f);
@@ -92,7 +116,7 @@ void Display(void)
 		break;
 	case 1:
 		glPushMatrix();
-		glScalef(0.5, 0.5, 0.0);
+		glScalef(0.5, 0.5, 0.5);
 		glRotated(70, 0, 0.5, 0.5);
 		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
 		glColor3f(0.0f, 0.0f, 0.25f);
@@ -101,7 +125,7 @@ void Display(void)
 		break;
 	case 2:
 		glPushMatrix();
-		glScalef(0.5, 0.5, 0.0);
+		glScalef(0.5, 0.5, 0.5);
 		glRotated(70, 0, 0.5, 0.5);
 		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
 		glColor3f(0.0f, 1.0f, 0.25f);
@@ -110,7 +134,7 @@ void Display(void)
 		break;
 	case 3:
 		glPushMatrix();
-		glScalef(0.5, 0.5, 0.0);
+		glScalef(0.5, 0.5, 0.5);
 		glRotated(70, 0, 0.5, 0.5);
 		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
 		glColor3f(0.0f, 0.0f, 0.25f);
@@ -127,7 +151,7 @@ void Display(void)
 		glPopMatrix();
 
 		glPushMatrix();
-		glScalef(0.5, 0.5, 0.0);
+		glScalef(0.5, 0.5, 0.5);
 		glRotated(0, 0, 0.5, 0);
 		glRotatef(fAnguloFig2, 0.0f, 3.0f, -0.2f);
 		glColor3f(0.0f, 0.0f, 0.25f);
@@ -136,7 +160,7 @@ void Display(void)
 		break;
 	case 5:
 		glPushMatrix();
-		glScalef(0.5, 0.5, 0.0);
+		glScalef(0.5, 0.5, 0.5);
 		glRotated(70, 0, 0.5, 0.5);
 		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
 		glColor3f(0.0f, 0.0f, 0.25f);
@@ -146,7 +170,7 @@ void Display(void)
 	case 6:
 		glPushMatrix();
 		glTranslatef(0.5, 0, 0);
-		glScalef(0.3, 0.3, 0.0);
+		glScalef(0.3, 0.3, 0.3);
 		glRotated(70, 0, 0.5, 0.5);
 		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
 		glColor3f(0.0f, 0.0f, 0.25f);
@@ -154,7 +178,7 @@ void Display(void)
 		glPopMatrix();
 
 		glPushMatrix();
-		glScalef(0.5, 0.5, 0.0);
+		glScalef(0.5, 0.5, 0.5);
 		glTranslatef(-0.5, 0, 0);
 		glRotated(70, 0, 0.5, 0.5);
 		glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
@@ -164,16 +188,16 @@ void Display(void)
 		break;
 	case 7:
 		glPushMatrix();
-		glScalef(0.5, 0.5, 0.0);
+		glScalef(0.5, 0.5, 0.5);
+		glTranslated(cos(fAnguloFig4), 0, sin(fAnguloFig4));
 		glRotated(70, 0, 0.5, 0.5);
-		glTranslated(0, 0, -1);
 		glRotatef(fAnguloFig2, 0.3f, 1.0f, 0.5f);
 		glColor3f(0.0f, 0.33f, 0.25f);
 		glutSolidTeapot(0.5);
 		glPopMatrix();
 
 		glPushMatrix();
-		glScalef(0.7, 0.7, 0.0);
+		glScalef(0.7, 0.7, 0.7);
 		glRotated(70, 0, 0.5, 0.5);
 		glRotatef(fAnguloFig2, 0.3f, 1.0f, 0.5f);
 		glColor3f(0.0f, 0, 0);
@@ -197,6 +221,7 @@ GLfloat decrementarAngulo(GLfloat angulo) {
 // Función que se ejecuta cuando el sistema no esta ocupado
 void Idle(void)
 {
+	//canvi d'objecte segueixi un camí tancat i el darrer torni a ser el primer
 	if (num == -1)
 	{
 		num = 7;
@@ -205,8 +230,8 @@ void Idle(void)
 	{
 		num = 0;
 	}
-	//Escalado toroide
 
+	//Escalado toroide
 	if (escaladoToroide >= MAX_TOR_SIZE) {
 		aumentarToroide = false;
 	}
@@ -251,10 +276,8 @@ void SpecialInput(int key, int x, int y)
 	switch (key)
 	{
 	case GLUT_KEY_UP:
-
 		break;
 	case GLUT_KEY_DOWN:
-
 		break;
 	case GLUT_KEY_LEFT:
 		num = num - 1;
