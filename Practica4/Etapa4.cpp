@@ -7,6 +7,9 @@
 //Dimensiones pantalla
 const int W_WIDTH = 500;
 const int W_HEIGHT = 500;
+float	mourex = 0, mourey = 0, mourez = 3;
+float 	mirarx = 0, mirary = 0, mirarz = 3;
+bool mirar = false;
 
 GLfloat fAngTorus; //Angulo rotacion torus
 
@@ -33,6 +36,7 @@ void draw_grid(int n, int d)
 	}
 	glPopMatrix();
 }
+
 
 //Dibuja los cubos del fondo
 /*
@@ -89,7 +93,47 @@ void draw_cubes() {
 	glutSolidCube(1.0);
 	glPopMatrix();
 }*/
+void moure() {
+	if (!mirar) {
+		
+		gluLookAt(mourex, mourey, mourez, mourex, mourey, 0.0, 0.0, 1.0, 0.0);
+	}
+	else {
+		gluLookAt(mourex, mourey, mourez, mirarx, mirary, 0.0, 0.0, 1.0, 0.0);
+	}
 
+
+
+	
+
+	
+}
+
+void drawSnowMan() {
+
+	glColor3f(1.0f, 1.0f, 1.0f);
+
+	// Draw Body
+	glTranslatef(0.0f, 0.75f, 0.0f);
+	glutSolidSphere(0.75f, 20, 20);
+
+	// Draw Head
+	glTranslatef(0.0f, 1.0f, 0.0f);
+	glutSolidSphere(0.25f, 20, 20);
+
+	// Draw Eyes
+	glPushMatrix();
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glTranslatef(0.05f, 0.10f, 0.18f);
+	glutSolidSphere(0.05f, 10, 10);
+	glTranslatef(-0.1f, 0.0f, 0.0f);
+	glutSolidSphere(0.05f, 10, 10);
+	glPopMatrix();
+
+	// Draw Nose
+	glColor3f(1.0f, 0.5f, 0.5f);
+	glutSolidCone(0.08f, 0.5f, 10, 2);
+}
 
 
 void Display(void)
@@ -98,14 +142,16 @@ void Display(void)
 	glLoadIdentity();
 	//Desplazamos camara
 	//Ver como funciona gluLookAt en: https://youtu.be/bmQmme9jKTc?t=315
-	gluLookAt(0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	moure();
+
+	
 
 	glPushMatrix();
 	glTranslatef(-10.0, -1.0, -15.0);
 	draw_grid(20, 1);
 	glPopMatrix();
-
-	
+	glTranslatef(0, 0,-1);
+	drawSnowMan();
 	glutSwapBuffers();
 	glFlush();
 }
@@ -118,17 +164,39 @@ void Idle(void)
 
 	glutPostRedisplay();
 }
-
+void controlTeclado(unsigned char key, int x, int y) {
+	mirar = false;
+	switch (key) {
+	case 'w':
+		mourez += 0.1;
+		break;
+	case 'a':
+		mourex -= 0.1;
+		break;
+	case 's':
+		mourez -= 0.1;
+		break;
+	case 'd':
+		mourex += 0.1;
+		break;
+	}
+	glutPostRedisplay();
+}
 void Special_Keys(int key, int x, int y)
 {
+	mirar = true;
 	switch (key) {
-	case GLUT_KEY_RIGHT:  directionTorus = 1.0;  break; //Cambia direccón de rotacion
-	case GLUT_KEY_LEFT:  directionTorus = -1.0;  break; //Cambia direccón de rotacion
+		
+	case GLUT_KEY_RIGHT:  mirarx += 0.1;   break;
+	case GLUT_KEY_LEFT:  mirarx -= 0.1;  break;
+	case GLUT_KEY_UP:  mirary += 0.1;  break;
+	case GLUT_KEY_DOWN:  mirary -= 0.1;  break;
 	default:;
 	}
 
 	glutPostRedisplay();
 }
+
 
 void reshape(int w, int h)
 {
@@ -199,6 +267,7 @@ int main(int argc, char** argv)
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
 	glutSpecialFunc(Special_Keys);
+	glutKeyboardFunc(controlTeclado);
 	glutReshapeFunc(reshape);
 
 	glEnable(GL_DEPTH_TEST);
