@@ -1,113 +1,130 @@
-#include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
-//Dimensiones pantalla
-const int W_WIDTH = 500;
-const int W_HEIGHT = 500;
-float	mourex = 0, mourey = 0, mourez = 3;
-float 	mirarx = 0, mirary = 0, mirarz = 3;
-bool mirar = false;
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 
-GLfloat fAngTorus; //Angulo rotacion torus
+#define BASE_HEIGHT  0.25
+#define BASE_WIDE    0.05
 
-static float directionTorus = 1.0; //Direccion de rotacion torus
+// angle of rotation for the camera direction
+GLdouble angle = 0.0f;
+GLfloat fAnguloFig2;
 
+// actual vector representing the camera's direction
+GLdouble lx = 0.0f, lz = -1.0f, ly = 0.0f;
 
-								 //Dibuja la rejilla
-void draw_grid(int n, int d)
+// XZ position of the camera
+GLdouble x = 0.0f, z = 5.0f, y = 2.5f;
+
+// the key states. These variables will be zero
+//when no key is being presses
+float deltaAngle = 0.0f;
+float deltaMove = 0;
+int xOrigin = -1;
+
+// width and height of the window
+int h, w;
+
+// variables to compute frames per second
+int frame;
+GLdouble time, timebase;
+char s[50];
+
+// variables to hold window identifiers
+int mainWindow, subWindow1, subWindow2, subWindow3;
+//border between subwindows
+int border = 5;
+
+//nombre per decidir quina figura pintam
+int figura = 1;
+
+void setProjection(int w1, int h1)
 {
-	int i;
+	float ratio;
+	// Prevent a divide by zero, when window is too short
+	// (you cant make a window of zero width).
+	ratio = 1.0f * w1 / h1;
+	// Reset the coordinate system before modifying
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	// Set the viewport to be the entire window
+	glViewport(0, 0, w1, h1);
+
+	// Set the clipping volume
+	gluPerspective(45, ratio, 0.1, 1000);
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void changeSize(int w1, int h1) {
+
+	if (h1 == 0)
+		h1 = 1;
+
+	// we're keeping these values cause we'll need them latter
+	w = w1;
+	h = h1;
+
+	// set subwindow 1 as the active window
+	glutSetWindow(subWindow1);
+	// resize and reposition the sub window
+	glutPositionWindow(border, border);
+	glutReshapeWindow(w - 2 * border, h / 2 - border * 3 / 2);
+	setProjection(w - 2 * border, h / 2 - border * 3 / 2);
+
+	// set subwindow 2 as the active window
+	glutSetWindow(subWindow2);
+	// resize and reposition the sub window
+	glutPositionWindow(border, (h + border) / 2);
+	glutReshapeWindow(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
+	setProjection(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
+
+	// set subwindow 3 as the active window
+	glutSetWindow(subWindow3);
+	// resize and reposition the sub window
+	glutPositionWindow((w + border) / 2, (h + border) / 2);
+	glutReshapeWindow(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
+	setProjection(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
+}
+
+////////////////////////////////////////////// 
+// 
+// The following two functions are to draw a table 
+
+// draw a table leg
+void draw_leg(float xt, float yt, float zt)
+{
 	glPushMatrix();
-	glLineWidth(1); //Cambiamos ancho de la linea
-	glColor3f(1, 1, 1); //Color de la linea
-	for (i = 0; i <= (n * 2) + 1; i++) {
-		glPushMatrix();
-		//La mitad se dibujan paralelas al eje x
-		if (i <= n) { glTranslatef(0, 0, i * d); }
-		//La otra mitad se dibujan paralelas al eje z
-		if (i > n) { glTranslatef((i - n - 1) * d, 0, 0); glRotatef(-90, 0, 1, 0); }
-		glBegin(GL_LINES);
-		glVertex3f(0, -0.1, 0); glVertex3f(n, -0.1, 0);
-		glEnd();
-		glPopMatrix();
-	}
+	glTranslatef(xt, yt, zt);
+	glScalef(0.1, 0.5, 0.1);
+	glutSolidCube(1.0);
 	glPopMatrix();
 }
 
 
-//Dibuja los cubos del fondo
-/*
-void draw_cubes() {
-	//Arriba izquierda
+//   draw a table - one table top with four legs
+void draw_table()
+{
+	glColor4f(.5, .5, .5, 1);
+
 	glPushMatrix();
-	glTranslatef(-0.5, 0.5, -1.0);
-	glPushMatrix();
-	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
-	glTranslatef(0.0, 0.0, 0.5);
-	glColor3ub(155, 222, 237);
-	glutWireTorus(0.2, 0.3, 6, 20);
-	glPopMatrix();
-	glColor3ub(43, 181, 228);
+	glTranslatef(0,-0.25,0);
+	glScalef(1, 0.1, 1);
 	glutSolidCube(1.0);
 	glPopMatrix();
 
-	//Arriba derecha
-	glPushMatrix();
-	glTranslatef(0.5, 0.5, 0.0);
-	glPushMatrix();
-	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
-	glTranslatef(0.0, 0.0, 0.5);
-	glColor3ub(185, 77, 155);
-	glutWireTorus(0.2, 0.3, 6, 20);
-	glPopMatrix();
-	glColor3ub(245, 229, 55);
-	glutSolidCube(1.0);
-	glPopMatrix();
-
-	//Abajo izquierda
-	glPushMatrix();
-	glTranslatef(-0.5, -0.5, 0.0);
-	glPushMatrix();
-	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
-	glTranslatef(0.0, 0.0, 0.5);
-	glColor3ub(252, 217, 51);
-	glutWireTorus(0.2, 0.3, 6, 20);
-	glPopMatrix();
-	glColor3ub(233, 38, 137);
-	glutSolidCube(1.0);
-	glPopMatrix();
-
-	//Abajo derecha
-	glPushMatrix();
-	glTranslatef(0.5, -0.5, -1.0);
-	glPushMatrix();
-	glRotatef(fAngTorus, 0.0, 0.0, 1.0);
-	glTranslatef(0.0, 0.0, 0.5);
-	glColor3ub(235, 54, 49);
-	glutWireTorus(0.2, 0.3, 6, 20);
-	glPopMatrix();
-	glColor3ub(196, 219, 115);
-	glutSolidCube(1.0);
-	glPopMatrix();
-}*/
-void moure() {
-	if (!mirar) {
-		
-		gluLookAt(mourex, mourey, mourez, mourex, mourey, 0.0, 0.0, 1.0, 0.0);
-	}
-	else {
-		gluLookAt(mourex, mourey, mourez, mirarx, mirary, 0.0, 0.0, 1.0, 0.0);
-	}
-
-
-
-	
-
-	
+	draw_leg(0.45, -0.5, -0.45);
+	draw_leg(0.45, -0.5, 0.45);
+	draw_leg(-0.45, -0.5, -0.45);
+	draw_leg(-0.45, -0.5, 0.45);
 }
+///////////////////////////////////////////
+
 
 void drawSnowMan() {
 
@@ -123,7 +140,7 @@ void drawSnowMan() {
 
 	// Draw Eyes
 	glPushMatrix();
-	glColor3f(0.0f, 0.0f, 0.0f);
+	glColor3f(1.0f, 0.0f, 0.0f);
 	glTranslatef(0.05f, 0.10f, 0.18f);
 	glutSolidSphere(0.05f, 10, 10);
 	glTranslatef(-0.1f, 0.0f, 0.0f);
@@ -131,148 +148,367 @@ void drawSnowMan() {
 	glPopMatrix();
 
 	// Draw Nose
-	glColor3f(1.0f, 0.5f, 0.5f);
+	glColor3f(1.0f,0.6f,0.1f);
+	glRotatef(0.0f, 1.0f, 0.0f, 0.0f);
 	glutSolidCone(0.08f, 0.5f, 10, 2);
+
+	glColor3f(1.0f, 1.0f, 1.0f);
+
+}
+void pintarObjecte() {
+	
+	glPushMatrix();
+	glScalef(0.5, 0.5, 0.5);
+	glRotated(70, 0, 0.5, 0.5);
+	glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
+	glColor3f(0.0f, 0.0f, 0.25f);
+	glutWireCube(0.5);
+	glPopMatrix();
+	
+	
+}
+void bot() {
+	y += 0.1;
+}
+GLfloat decrementarAngulo(GLfloat angulo) {
+	if (angulo > 360) {
+		angulo -= 360;
+	}
+	return angulo;
 }
 
+void renderBitmapString(
+	float x,
+	float y,
+	float z,
+	void* font,
+	char* string) {
 
-void Display(void)
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	char* c;
+	glRasterPos3f(x, y, z);
+	for (c = string; *c != '\0'; c++) {
+		glutBitmapCharacter(font, *c);
+	}
+}
+
+void restorePerspectiveProjection() {
+
+	glMatrixMode(GL_PROJECTION);
+	// restore previous projection matrix
+	glPopMatrix();
+
+	// get back to modelview mode
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void setOrthographicProjection() {
+
+	// switch to projection mode
+	glMatrixMode(GL_PROJECTION);
+
+	// save previous matrix which contains the
+	//settings for the perspective projection
+	glPushMatrix();
+
+	// reset matrix
 	glLoadIdentity();
-	//Desplazamos camara
-	//Ver como funciona gluLookAt en: https://youtu.be/bmQmme9jKTc?t=315
-	moure();
+
+	// set a 2D orthographic projection
+	gluOrtho2D(0, w, h, 0);
+
+	// switch back to modelview mode
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void computePos(float deltaMove) {
+
+	x += deltaMove * lx * 0.1f;
+	z += deltaMove * lz * 0.1f;
+}
+
+// Common Render Items for all subwindows
+void renderScene2() {
 
 	
 
-	glPushMatrix();
-	glTranslatef(-10.0, -1.0, -15.0);
-	draw_grid(20, 1);
-	glPopMatrix();
-	glTranslatef(0, 0,-1);
-	drawSnowMan();
-	glutSwapBuffers();
-	glFlush();
-}
+	// Draw ground
 
-void Idle(void)
-{
-	//Incrementamos el angulo de rotacion
-	fAngTorus += 0.1 * directionTorus;
+	glColor3f(0.0f, 0.6f, 0.0f);
+	glBegin(GL_QUADS);
+	glVertex3f(-100.0f, 0.0f, -100.0f);
+	glVertex3f(-100.0f, 0.0f, 100.0f);
+	glVertex3f(100.0f, 0.0f, 100.0f);
+	glVertex3f(100.0f, 0.0f, -100.0f);
+	glEnd();
 
+	//drawSnowMan();
 
-	glutPostRedisplay();
-}
-void controlTeclado(unsigned char key, int x, int y) {
-	mirar = false;
-	switch (key) {
-	case 'w':
-		mourez += 0.1;
-		break;
-	case 'a':
-		mourex -= 0.1;
-		break;
-	case 's':
-		mourez -= 0.1;
-		break;
-	case 'd':
-		mourex += 0.1;
-		break;
-	}
-	glutPostRedisplay();
-}
-void Special_Keys(int key, int x, int y)
-{
-	mirar = true;
-	switch (key) {
-		
-	case GLUT_KEY_RIGHT:  mirarx += 0.1;   break;
-	case GLUT_KEY_LEFT:  mirarx -= 0.1;  break;
-	case GLUT_KEY_UP:  mirary += 0.1;  break;
-	case GLUT_KEY_DOWN:  mirary -= 0.1;  break;
-	default:;
-	}
-
-	glutPostRedisplay();
-}
-
-
-void reshape(int w, int h)
-{
-	if (w < W_HEIGHT || h < W_HEIGHT) { //Caso en que se encoje la ventana
-		int wn = w, hn = h;
-		if (w < h) //Escogemos la dimensión mas pequea
+	//glTranslatef(0, 2.0, 0.0);
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 2; j++)
 		{
-			hn = W_HEIGHT * w / W_HEIGHT;
+			figura++;
+			glPushMatrix();
+			glTranslatef(i * 10.0f, 2.0f, j * 10.0f);
+			draw_table();
+			glColor3f(i * 2, 0.0, j * 2);
+			pintarObjecte();
+			glPopMatrix();
 		}
-		else {
-			wn = W_WIDTH * h / W_HEIGHT;
-		}
-		glViewport(w / 2 - wn / 2, h / 2 - hn / 2, wn, hn);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glFrustum(-1.0, 1.0, -1.0, 1.0, 2.0, 30.0);
-		glMatrixMode(GL_MODELVIEW);
 	}
-	else { //Si la ventana no es menor al tamao original
-		glViewport(w / 2 - W_WIDTH / 2, h / 2 - W_HEIGHT / 2, W_WIDTH, W_HEIGHT);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glFrustum(-1.0, 1.0, -1.0, 1.0, 2.0, 30.0);
-		glMatrixMode(GL_MODELVIEW);
+	
+	draw_table();
+	
+	// Draw 36 SnowMen
+	/*for (int i = -3; i < 3; i++)
+		for (int j = -3; j < 3; j++)
+		{
+			glPushMatrix();
+			glTranslatef(i * 10.0f, 0.0f, j * 10.0f);
+			drawSnowMan();
+			glPopMatrix();
+		}*/
+}
+
+// Display func for main window
+void renderScene() {
+	glutSetWindow(mainWindow);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glutSwapBuffers();
+}
+
+// Display func for sub window 1
+void renderScenesw1() {
+
+	glutSetWindow(subWindow1);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glLoadIdentity();
+	gluLookAt(x, y, z,
+		x + lx, y + ly, z + lz,
+		0.0f, 1.0f, 0.0f);
+
+	renderScene2();
+
+	// display fps in the top window
+	frame++;
+
+	time = glutGet(GLUT_ELAPSED_TIME);
+	if (time - timebase > 1000) {
+		sprintf_s(s, "Lighthouse3D - FPS:%4.2f",
+			frame * 1000.0 / (time - timebase));
+		timebase = time;
+		frame = 0;
 	}
+
+	setOrthographicProjection();
+
+	glPushMatrix();
+	glLoadIdentity();
+	renderBitmapString(5, 30, 0, GLUT_BITMAP_HELVETICA_12, s);
+	glPopMatrix();
+
+	restorePerspectiveProjection();
+
+	glutSwapBuffers();
+}
+
+// Display func for sub window 2
+void renderScenesw2() {
+
+	glutSetWindow(subWindow2);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glLoadIdentity();
+	gluLookAt(x, y + 15, z,
+		x, y - 1, z,
+		lx, 0, lz);
+
+	// Draw red cone at the location of the main camera
+	glPushMatrix();
+	glColor3f(1.0, 0.0, 0.0);
+	glTranslatef(x, y, z);
+	glRotatef(180 - (angle + deltaAngle) * 180.0 / 3.14, 0.0, 1.0, 0.0);
+	glutSolidCone(0.2, 0.8f, 4, 4);
+	glPopMatrix();
+
+	renderScene2();
+
+	glutSwapBuffers();
+}
+
+// Display func for sub window 3
+void renderScenesw3() {
+
+	glutSetWindow(subWindow3);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glLoadIdentity();
+	gluLookAt(x - lz * 10, y, z + lx * 10,
+		x, y, z,
+		0.0f, 1.0f, 0.0f);
+
+	// Draw red cone at the location of the main camera
+	glPushMatrix();
+	glColor3f(1.0, 0.0, 0.0);
+	glTranslatef(x, y, z);
+	glRotatef(180 - (angle + deltaAngle) * 180.0 / 3.14, 0.0, 1.0, 0.0);
+	glutSolidCone(0.2, 0.8f, 4, 4);
+	glPopMatrix();
+
+	renderScene2();
+
+	glutSwapBuffers();
 }
 
 
-void reshape2(int w, int h) {
+// Global render func
+void renderSceneAll() {
+	fAnguloFig2 += 3.0f;
+	fAnguloFig2 = decrementarAngulo(fAnguloFig2);
 
-	if (h == 0) { //per no fer divisions per 0
-		h = 1;
+	// check for keyboard movement
+	if (deltaMove) {
+		computePos(deltaMove);
+		glutSetWindow(mainWindow);
+		glutPostRedisplay();
 	}
-	float wMon = 2;
-	float hMon = 2;
-	float aspecRatioW = (float)wMon / (float)hMon; //aspect ratio del Window
-	float aspectRatioV = (float)w / (float)h;	//aspect ratio del viewport 
 
-	if (aspectRatioV > aspecRatioW)
-		//ViewPort major que aspect (aWin) de la regió  
-	{
-		//Amplada nova = Amplada anterior * (aViewPort / aWindow)
-		//0 -+ i /2 para centrarlo
-		glLoadIdentity();
-		glOrtho((GLdouble)0 - (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble)0 + (wMon * (aspectRatioV / aspecRatioW)) / 2, (GLdouble)-hMon / 2, (GLdouble)hMon / 2, (GLdouble)-1.0, (GLdouble)1.0f);
-	}
-	else
-	{
-
-		//Altura nova = Amplada Anterior * (aViewPort / aWindow)
-		//Posam 0 -+ perque estigui centrat
-		glLoadIdentity();
-		glOrtho((GLdouble)-wMon / 2, wMon / 2, (GLdouble)0 - hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble)0 + hMon * (aspecRatioW / aspectRatioV) / 2, (GLdouble)-1.0, (GLdouble)1.0f);
-	}
-	glViewport(0, 0, w, h); //Pintam segons es canvi des viewport
+	renderScene();
+	renderScenesw1();
+	renderScenesw2();
+	renderScenesw3();
 }
 
-int main(int argc, char** argv)
-{
-	glutInit(&argc, argv);
+// -----------------------------------
+//             KEYBOARD
+// -----------------------------------
 
-	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(W_WIDTH, W_HEIGHT);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+void processNormalKeys(unsigned char key, int xx, int yy) {
 
-	glutCreateWindow("Etapa 3");
+	if (key == 27) {
+		glutDestroyWindow(mainWindow);
+		exit(0);
+	}
+	if (key == 'a' ) 
+	{
+		bot();
+	}
+}
 
-	glutDisplayFunc(Display);
-	glutIdleFunc(Idle);
-	glutSpecialFunc(Special_Keys);
-	glutKeyboardFunc(controlTeclado);
-	glutReshapeFunc(reshape);
+void pressKey(int key, int xx, int yy) {
 
+	switch (key) {
+	case GLUT_KEY_UP: deltaMove = 0.5f; break;
+	case GLUT_KEY_DOWN: deltaMove = -0.5f; break;
+	}
+	glutSetWindow(mainWindow);
+	glutPostRedisplay();
+
+}
+
+void releaseKey(int key, int x, int y) {
+
+	switch (key) {
+	case GLUT_KEY_UP:
+	case GLUT_KEY_DOWN: deltaMove = 0; break;
+	}
+}
+
+// -----------------------------------
+//             MOUSE
+// -----------------------------------
+
+void mouseMove(int x, int y) {
+
+	// this will only be true when the left button is down
+	if (xOrigin >= 0) {
+
+		// update deltaAngle
+		deltaAngle = (x - xOrigin) * 0.001f;
+
+		// update camera's direction
+		lx = sin(angle + deltaAngle);
+		lz = -cos(angle + deltaAngle);
+
+		glutSetWindow(mainWindow);
+		glutPostRedisplay();
+	}
+}
+
+void mouseButton(int button, int state, int x, int y) {
+
+	// only start motion if the left button is pressed
+	if (button == GLUT_LEFT) {
+
+		// when the button is released
+		if (state == GLUT_UP) {
+			angle += deltaAngle;
+			deltaAngle = 0.0f;
+			xOrigin = -1;
+		}
+		else {// state = GLUT_DOWN
+			xOrigin = x;
+
+		}
+	}
+}
+
+// -----------------------------------
+//             MAIN and INIT
+// -----------------------------------
+
+void init() {
+
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.1, 0.1, 0.1, 1.0);
+	glEnable(GL_CULL_FACE);
 
+	// register callbacks
+	glutIgnoreKeyRepeat(1);
+	glutKeyboardFunc(processNormalKeys);
+	glutSpecialFunc(pressKey);
+	glutSpecialUpFunc(releaseKey);
+	glutMouseFunc(mouseButton);
+	glutMotionFunc(mouseMove);
+}
+
+int main(int argc, char** argv) {
+
+	// init GLUT and create main window
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+	glutInitWindowPosition(100, 100);
+	glutInitWindowSize(800, 800);
+	mainWindow = glutCreateWindow("Etapa4");
+
+	// callbacks for main window
+	glutDisplayFunc(renderSceneAll);
+	glutReshapeFunc(changeSize);
+
+	// Removing the idle function to save CPU and GPU
+	glutIdleFunc(renderSceneAll);
+	init();
+
+	// sub windows
+	subWindow1 = glutCreateSubWindow(mainWindow, border, border, w - 2 * border, h / 2 - border * 3 / 2);
+	glutDisplayFunc(renderScenesw1);
+	init();
+
+	subWindow2 = glutCreateSubWindow(mainWindow, border, (h + border) / 2, w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
+	glutDisplayFunc(renderScenesw2);
+	init();
+
+	subWindow3 = glutCreateSubWindow(mainWindow, (w + border) / 2, (h + border) / 2, w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
+	glutDisplayFunc(renderScenesw3);
+	init();
+
+	// enter GLUT event processing cycle
 	glutMainLoop();
-	return 0;
+
+	return 1;
 }
