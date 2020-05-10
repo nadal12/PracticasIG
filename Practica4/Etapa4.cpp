@@ -8,6 +8,8 @@
 #include <GL/glut.h>
 #endif
 
+//////////////////////////////////////////////////////////////////
+//                               DEFINICIÓ DE VARIABLES         //
 #define BASE_HEIGHT  0.25
 #define BASE_WIDE    0.05
 
@@ -22,7 +24,7 @@ GLdouble lx = 0.0f, lz = -1.0f, ly = 0.0f;
 GLdouble x = 0.0f, z = 5.0f, y = 2.5f;
 
 // the key states. These variables will be zero
-//when no key is being presses
+// when no key is being presses
 float deltaAngle = 0.0f;
 float deltaMove = 0;
 int xOrigin = -1;
@@ -39,29 +41,34 @@ char s[50];
 int mainWindow, subWindow1, subWindow2, subWindow3;
 //border between subwindows
 int border = 5;
-
 //nombre per decidir quina figura pintam
 int figura = 1;
+//==============================================================//
 
-void setProjection(int w1, int h1)
+
+
+//////////////////////////////////////////////////////
+//                                RESHAPE           //
+// Aquesta funció l'usarem pes reshape des viewport //
+void setProjection(int w1, int h1) 
 {
 	float ratio;
 	// Prevent a divide by zero, when window is too short
 	// (you cant make a window of zero width).
 	ratio = 1.0f * w1 / h1;
 	// Reset the coordinate system before modifying
-	glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_PROJECTION); //ProjectionView is the matrix that represents your camera's lens (aperture, far-field, near-field, etc).
 	glLoadIdentity();
 
 	// Set the viewport to be the entire window
 	glViewport(0, 0, w1, h1);
 
 	// Set the clipping volume
-	gluPerspective(45, ratio, 0.1, 1000);
-	glMatrixMode(GL_MODELVIEW);
+	gluPerspective(45, ratio, 0.1, 1000); //Referent a s'entorn, com el veus
+	glMatrixMode(GL_MODELVIEW); //ModelView is the matrix that represents your camera (position, pointing, and up vector).
 }
-
-void changeSize(int w1, int h1) {
+//Lo que a ses anteriors etapes li deiem reshape :D //
+void changeSize(int w1, int h1) { 
 
 	if (h1 == 0)
 		h1 = 1;
@@ -91,12 +98,13 @@ void changeSize(int w1, int h1) {
 	glutReshapeWindow(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
 	setProjection(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
 }
+//==================================================//
 
-////////////////////////////////////////////// 
-// 
-// The following two functions are to draw a table 
 
-// draw a table leg
+
+/////////////////////////////////////////////////////////////////////
+// Les següents dues funcions ens serviran per dibuixar les taules //
+// Com construim una pota de la taula                              //
 void draw_leg(float xt, float yt, float zt)
 {
 	glPushMatrix();
@@ -105,12 +113,10 @@ void draw_leg(float xt, float yt, float zt)
 	glutSolidCube(1.0);
 	glPopMatrix();
 }
-
-
-//   draw a table - one table top with four legs
+//   Construim l'objecte taula a partir de les potes definides     //
 void draw_table()
 {
-	glColor4f(.5, .5, .5, 1);
+	glColor4f(.82, .60, .16, 1);
 
 	glPushMatrix();
 	glTranslatef(0,-0.25,0);
@@ -123,9 +129,12 @@ void draw_table()
 	draw_leg(-0.45, -0.5, -0.45);
 	draw_leg(-0.45, -0.5, 0.45);
 }
-///////////////////////////////////////////
+//=================================================================//
 
 
+
+//////////////////////////////////////
+// Si volguessim fer ninots de neu: //
 void drawSnowMan() {
 
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -155,21 +164,25 @@ void drawSnowMan() {
 	glColor3f(1.0f, 1.0f, 1.0f);
 
 }
+//==================================//
+
+
+///////////////////////////
+// EL CUB SOBRE LA TAULA //
 void pintarObjecte() {
 	
 	glPushMatrix();
 	glScalef(0.5, 0.5, 0.5);
 	glRotated(70, 0, 0.5, 0.5);
 	glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
-	glColor3f(0.0f, 0.0f, 0.25f);
+	glColor3f(1.0f, 1.0f, 1.0f);
 	glutWireCube(0.5);
 	glPopMatrix();
-	
-	
 }
-void bot() {
-	y += 0.1;
-}
+//=======================//
+
+
+
 GLfloat decrementarAngulo(GLfloat angulo) {
 	if (angulo > 360) {
 		angulo -= 360;
@@ -177,19 +190,20 @@ GLfloat decrementarAngulo(GLfloat angulo) {
 	return angulo;
 }
 
-void renderBitmapString(
-	float x,
-	float y,
-	float z,
-	void* font,
-	char* string) {
 
+
+/////////////////////////////////////////////////////////////////////////////////
+//           Això crec que se usarà per printar es FPS per pantalla            //
+void renderBitmapString(float x,float y,float z,void* font,char* string) {
 	char* c;
 	glRasterPos3f(x, y, z);
 	for (c = string; *c != '\0'; c++) {
 		glutBitmapCharacter(font, *c);
 	}
 }
+//=============================================================================//
+
+
 
 void restorePerspectiveProjection() {
 
@@ -228,8 +242,6 @@ void computePos(float deltaMove) {
 
 // Common Render Items for all subwindows
 void renderScene2() {
-
-	
 
 	// Draw ground
 
@@ -286,9 +298,9 @@ void renderScenesw1() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(x, y, z,
-		x + lx, y + ly, z + lz,
-		0.0f, 1.0f, 0.0f);
+	gluLookAt(	x, y, z,
+				x + lx, y + ly, z + lz,
+				0.0f, 1.0f, 0.0f);
 
 	renderScene2();
 
@@ -307,7 +319,7 @@ void renderScenesw1() {
 
 	glPushMatrix();
 	glLoadIdentity();
-	renderBitmapString(5, 30, 0, GLUT_BITMAP_HELVETICA_12, s);
+	renderBitmapString(5, 30, 0, GLUT_BITMAP_HELVETICA_12, s); // Això crec que és lo que mostra es FPS
 	glPopMatrix();
 
 	restorePerspectiveProjection();
@@ -323,9 +335,9 @@ void renderScenesw2() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(x, y + 15, z,
-		x, y - 1, z,
-		lx, 0, lz);
+	gluLookAt(	x, y + 15, z,
+				x, y - 1, z,
+				lx, 0, lz);
 
 	// Draw red cone at the location of the main camera
 	glPushMatrix();
@@ -390,13 +402,18 @@ void renderSceneAll() {
 
 void processNormalKeys(unsigned char key, int xx, int yy) {
 
-	if (key == 27) {
+	if (key == 27) // si apretes ESC te tanca sa finestra
+	{
 		glutDestroyWindow(mainWindow);
 		exit(0);
 	}
 	if (key == 'a' ) 
 	{
-		bot();
+		y += 0.1;
+	}
+	if (key == 'z' & y > 2.5) //sa segona condicio es perque no pugui baixar si no ha pujat, que no traspassi es terra.
+	{ 
+		y -= 0.1;
 	}
 }
 
@@ -453,7 +470,6 @@ void mouseButton(int button, int state, int x, int y) {
 		}
 		else {// state = GLUT_DOWN
 			xOrigin = x;
-
 		}
 	}
 }
