@@ -255,7 +255,6 @@ void computePos(float deltaMove) {
 void renderScene2() {
 
 	// Draw ground
-
 	glColor3f(0.0f, 0.6f, 0.0f);
 	glBegin(GL_QUADS);
 	glVertex3f(-100.0f, 0.0f, -100.0f);
@@ -313,10 +312,11 @@ void renderScenesw1() {
 	gluLookAt(x, y, z,
 		x + lx, y + ly, z + lz,
 		-(x + lx) * (y + ly), (y + ly) * (z + lz), -(x + lx) * (y + ly)); //permetre que la normal varii sent sempre ortogonal al vector de la visió de la camara
-*/
+	*/
+
 	gluLookAt(x, y, z,
 		x + lx, y + ly, z + lz,
-		0,1,0); //permetre que la normal varii sent sempre ortogonal al vector de la visió de la camara
+		0,1,0);
 
 
 	renderScene2();
@@ -397,6 +397,7 @@ void renderScenesw3() {
 
 // Global render func
 void renderSceneAll() {
+
 	fAnguloFig2 += 3.0f;
 	fAnguloFig2 = decrementarAngulo(fAnguloFig2);
 
@@ -469,8 +470,8 @@ void mouseMove(int x, int y) {
 		betaAngle = (y - yOrigin) * 0.001f;
 
 		// update camera's direction
-		lx = sin(angle + deltaAngle) * sin(beta - betaAngle);
-		lz = -cos(angle + deltaAngle) * sin(beta - betaAngle);
+		lx = sin(angle + deltaAngle) * sin(beta + betaAngle);
+		lz = -cos(angle + deltaAngle) * sin(beta + betaAngle);
 		ly = cos(beta + betaAngle);
 
 		glutSetWindow(mainWindow);
@@ -486,12 +487,15 @@ void mouseButton(int button, int state, int x, int y) {
 		// when the button is released
 		if (state == GLUT_UP) {
 			angle += deltaAngle;
-			beta -= betaAngle;
+			beta += betaAngle;
 			deltaAngle = 0.0f;
 			betaAngle = 0.0f;
 			xOrigin = -1;
+			yOrigin = -1;
+		
 		}
 		else {// state = GLUT_DOWN
+			
 			xOrigin = x;
 			yOrigin = y;
 		}
@@ -525,7 +529,6 @@ void init() {
 }
 
 int main(int argc, char** argv) {
-
 	// init GLUT and create main window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
