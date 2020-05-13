@@ -47,10 +47,21 @@ int figura = 1;
 
 
 
+///////////////////////////////////////////////////////////////////////////////
+//							EXPERIMENT COORD ESFÈRIQUES						 //
+GLdouble PI = 3.1415926535897932384626433832795;
+GLdouble beta = PI / 2;
+// Tecles d'estat. Aquestes variables seran 0 quan no s'apretin les tecles
+float betaAngle = 0.0f;
+int yOrigin = -1;
+//===========================================================================//
+
+
+
 //////////////////////////////////////////////////////
 //                                RESHAPE           //
 // Aquesta funció l'usarem pes reshape des viewport //
-void setProjection(int w1, int h1) 
+void setProjection(int w1, int h1)
 {
 	float ratio;
 	// Prevent a divide by zero, when window is too short
@@ -68,7 +79,7 @@ void setProjection(int w1, int h1)
 	glMatrixMode(GL_MODELVIEW); //ModelView is the matrix that represents your camera (position, pointing, and up vector).
 }
 //Lo que a ses anteriors etapes li deiem reshape :D //
-void changeSize(int w1, int h1) { 
+void changeSize(int w1, int h1) {
 
 	if (h1 == 0)
 		h1 = 1;
@@ -119,7 +130,7 @@ void draw_table()
 	glColor4f(.82, .60, .16, 1);
 
 	glPushMatrix();
-	glTranslatef(0,-0.25,0);
+	glTranslatef(0, -0.25, 0);
 	glScalef(1, 0.1, 1);
 	glutSolidCube(1.0);
 	glPopMatrix();
@@ -157,7 +168,7 @@ void drawSnowMan() {
 	glPopMatrix();
 
 	// Draw Nose
-	glColor3f(1.0f,0.6f,0.1f);
+	glColor3f(1.0f, 0.6f, 0.1f);
 	glRotatef(0.0f, 1.0f, 0.0f, 0.0f);
 	glutSolidCone(0.08f, 0.5f, 10, 2);
 
@@ -170,7 +181,7 @@ void drawSnowMan() {
 ///////////////////////////
 // EL CUB SOBRE LA TAULA //
 void pintarObjecte() {
-	
+
 	glPushMatrix();
 	glScalef(0.5, 0.5, 0.5);
 	glRotated(70, 0, 0.5, 0.5);
@@ -194,7 +205,7 @@ GLfloat decrementarAngulo(GLfloat angulo) {
 
 /////////////////////////////////////////////////////////////////////////////////
 //           Això crec que se usarà per printar es FPS per pantalla            //
-void renderBitmapString(float x,float y,float z,void* font,char* string) {
+void renderBitmapString(float x, float y, float z, void* font, char* string) {
 	char* c;
 	glRasterPos3f(x, y, z);
 	for (c = string; *c != '\0'; c++) {
@@ -269,9 +280,9 @@ void renderScene2() {
 			glPopMatrix();
 		}
 	}
-	
+
 	draw_table();
-	
+
 	// Draw 36 SnowMen
 	/*for (int i = -3; i < 3; i++)
 		for (int j = -3; j < 3; j++)
@@ -298,9 +309,15 @@ void renderScenesw1() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(	x, y, z,
-				x + lx, y + ly, z + lz,
-				0.0f, 1.0f, 0.0f);
+	/*
+	gluLookAt(x, y, z,
+		x + lx, y + ly, z + lz,
+		-(x + lx) * (y + ly), (y + ly) * (z + lz), -(x + lx) * (y + ly)); //permetre que la normal varii sent sempre ortogonal al vector de la visió de la camara
+*/
+	gluLookAt(x, y, z,
+		x + lx, y + ly, z + lz,
+		0,1,0); //permetre que la normal varii sent sempre ortogonal al vector de la visió de la camara
+
 
 	renderScene2();
 
@@ -335,15 +352,15 @@ void renderScenesw2() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(	x, y + 15, z,
-				x, y - 1, z,
-				lx, 0, lz);
+	gluLookAt(x, y + 15, z,
+		x, y - 1, z,
+		lx, 0, lz);
 
 	// Draw red cone at the location of the main camera
 	glPushMatrix();
 	glColor3f(1.0, 0.0, 0.0);
 	glTranslatef(x, y, z);
-	glRotatef(180 - (angle + deltaAngle) * 180.0 / 3.14, 0.0, 1.0, 0.0);
+	glRotatef(180 - (angle + deltaAngle) * 180.0 / PI, 0.0, 1.0, 0.0);
 	glutSolidCone(0.2, 0.8f, 4, 4);
 	glPopMatrix();
 
@@ -407,12 +424,12 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 		glutDestroyWindow(mainWindow);
 		exit(0);
 	}
-	if (key == 'a' ) 
+	if (key == 'a')
 	{
 		y += 0.1;
 	}
 	if (key == 'z' & y > 2.5) //sa segona condicio es perque no pugui baixar si no ha pujat, que no traspassi es terra.
-	{ 
+	{
 		y -= 0.1;
 	}
 }
@@ -428,6 +445,7 @@ void pressKey(int key, int xx, int yy) {
 
 }
 
+
 void releaseKey(int key, int x, int y) {
 
 	switch (key) {
@@ -435,6 +453,7 @@ void releaseKey(int key, int x, int y) {
 	case GLUT_KEY_DOWN: deltaMove = 0; break;
 	}
 }
+
 
 // -----------------------------------
 //             MOUSE
@@ -447,10 +466,12 @@ void mouseMove(int x, int y) {
 
 		// update deltaAngle
 		deltaAngle = (x - xOrigin) * 0.001f;
+		betaAngle = (y - yOrigin) * 0.001f;
 
 		// update camera's direction
-		lx = sin(angle + deltaAngle);
-		lz = -cos(angle + deltaAngle);
+		lx = sin(angle + deltaAngle) * sin(beta - betaAngle);
+		lz = -cos(angle + deltaAngle) * sin(beta - betaAngle);
+		ly = cos(beta + betaAngle);
 
 		glutSetWindow(mainWindow);
 		glutPostRedisplay();
@@ -465,14 +486,24 @@ void mouseButton(int button, int state, int x, int y) {
 		// when the button is released
 		if (state == GLUT_UP) {
 			angle += deltaAngle;
+			beta -= betaAngle;
 			deltaAngle = 0.0f;
+			betaAngle = 0.0f;
 			xOrigin = -1;
 		}
 		else {// state = GLUT_DOWN
 			xOrigin = x;
+			yOrigin = y;
 		}
 	}
+
 }
+
+
+
+
+
+
 
 // -----------------------------------
 //             MAIN and INIT
