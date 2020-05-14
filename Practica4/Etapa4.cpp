@@ -8,6 +8,8 @@
 #include <GL/glut.h>
 #endif
 
+#include <vector>
+
 //////////////////////////////////////////////////////////////////
 //                               DEFINICI� DE VARIABLES         //
 #define BASE_HEIGHT  0.25
@@ -21,7 +23,7 @@ GLfloat fAnguloFig2;
 GLdouble lx = 0.0f, lz = -1.0f, ly = 0.0f;
 
 // XZ position of the camera
-GLdouble x = 0.0f, z = 5.0f, y = 2.5f;
+GLdouble x = 0.0f, z = 5.0f, y = 1.5f;
 
 // the key states. These variables will be zero
 // when no key is being presses
@@ -43,6 +45,31 @@ int mainWindow, subWindow1, subWindow2, subWindow3;
 int border = 5;
 //nombre per decidir quina figura pintam
 int figura = 1;
+
+bool forapitjar = false;
+int prespect = 1;
+
+//Lorenz Atracctor
+float xlorenz = 0.01;
+float ylorenz = 0;
+float zlorenz = 0;
+
+float dx;
+float dy;
+float dz;
+
+float dt = 0.01;
+
+float a = 10;
+float b = 28;
+float c = 8/3;
+struct Point
+{
+	float x, y,z;
+	//unsigned char r, g, b, a;
+};
+std::vector< Point > points;
+
 //==============================================================//
 
 
@@ -174,6 +201,8 @@ void pintarObjecte() {
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glutWireCube(0.5);
 	glPopMatrix();
+
+	//glVertex3fv(po[1]);
 }
 //=======================//
 
@@ -238,7 +267,7 @@ void computePos(float deltaMove) {
 
 // Common Render Items for all subwindows
 void renderScene2() {
-
+	//printf("%f", z);
 	// Draw ground
 	glColor3f(0.0f, 0.6f, 0.0f);
 	glBegin(GL_QUADS);
@@ -249,24 +278,19 @@ void renderScene2() {
 	glEnd();
 
 	//drawSnowMan();
-
+	//pintarObjecte();
 	//glTranslatef(0, 2.0, 0.0);
-	for (int i = 0; i < 3; i++)
+	
+	if (forapitjar)
 	{
-		for (int j = 0; j < 2; j++)
-		{
-			figura++;
-			glPushMatrix();
-			glTranslatef(i * 10.0f, 2.0f, j * 10.0f);
-			draw_table();
-			glColor3f(i * 2, 0.0, j * 2);
-			pintarObjecte();
-			glPopMatrix();
-		}
+		glTranslatef(0.0, 2.0f, 0.0);
 	}
-
+	else {
+		glTranslatef(0.0, 0.75f, 0.0);
+	}
+	
 	draw_table();
-
+	pintarObjecte();
 	// Draw 36 SnowMen
 	/*for (int i = -3; i < 3; i++)
 		for (int j = -3; j < 3; j++)
@@ -276,6 +300,46 @@ void renderScene2() {
 			drawSnowMan();
 			glPopMatrix();
 		}*/
+}
+
+void perspectiva() {
+	switch (prespect)
+	{
+	case 1:
+		gluLookAt(0, 5, 0.15,
+			0, 2, 0,
+			0, 1, 0);
+		//printf("Cenital");
+		break;
+	case 2:
+		gluLookAt(0, 4.5, 3,
+			0, 2, 0,
+			0, 1, 0);
+		//printf("Picado");
+		break;
+	case 3:
+		gluLookAt(0, 1.3, 4,
+			0, 2, 0,
+			0, 1, 0);
+		//printf("Normal");
+		break;
+	case 4:
+		gluLookAt(0, -1.5, 3,
+			0, 2, 0,
+			0, 1, 0);
+		//printf("Contrapicado");
+		break;
+	case 5:
+		gluLookAt(0, -2, 0.15,
+			0, 2, 0,
+			0, 1, 0);
+		//printf("Nadir");
+		break;
+	default:
+		break;
+	}
+
+
 }
 
 // Display func for main window
@@ -297,11 +361,19 @@ void renderScenesw1() {
 		x + lx, y + ly, z + lz,
 		-(x + lx) * (y + ly), (y + ly) * (z + lz), -(x + lx) * (y + ly)); //permetre que la normal varii sent sempre ortogonal al vector de la visi� de la camara
 	*/
+	if (forapitjar)
+	{
+		perspectiva();
+		
+	}
+	else
+	{
+		gluLookAt(x, y, z,
+			x + lx, y + ly, z + lz,
+			0, 1, 0);
 
-	gluLookAt(x, y, z,
-		x + lx, y + ly, z + lz,
-		0, 1, 0);
-
+	}
+	
 
 	renderScene2();
 
@@ -333,13 +405,35 @@ void renderScenesw1() {
 void renderSceneAll() {
 	fAnguloFig2 += 3.0f;
 	fAnguloFig2 = decrementarAngulo(fAnguloFig2);
+	if (prespect >=6)
+	{
+		prespect = 1;
+	}
+	//Lorenz
+
+	dx = (a * (ylorenz- xlorenz) * dt);
+	dy = (xlorenz * (b - zlorenz) - ylorenz) * dt;
+	dz = (xlorenz * ylorenz - c * z)* dt;
+
+	xlorenz = xlorenz + dx * 0.1;
+	ylorenz = ylorenz + dy * 0.1;
+	zlorenz = zlorenz + dz * 0.1;
+
+	points.push_back(Point{ xlorenz, ylorenz, zlorenz });
+
+	//printf("%f", xlorenz);
+
 
 
 	// check for keyboard movement
-	if (deltaMove) {
-		computePos(deltaMove);
-		glutPostRedisplay();
+	if (!forapitjar)
+	{
+		if (deltaMove) {
+			computePos(deltaMove);
+			glutPostRedisplay();
+		}
 	}
+	
 
 
 	renderScenesw1();
@@ -354,14 +448,23 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 
 	if (key == 27) // si apretes ESC te tanca sa finestra
 	{
-		glutDestroyWindow(mainWindow);
+	
 		exit(0);
+	}
+	if (key == 'p')
+	{
+		forapitjar = !forapitjar;
+		prespect = 1;
+		
+	}
+	if (key == 'n') {
+		prespect = prespect + 1;
 	}
 	if (key == 'a')
 	{
 		y += 0.1;
 	}
-	if (key == 'z' && y >= 2.5) //sa segona condicio es perque no pugui baixar si no ha pujat, que no traspassi es terra.
+	if (key == 'z'/* && y >= 2.5*/) //sa segona condicio es perque no pugui baixar si no ha pujat, que no traspassi es terra.
 	{
 		y -= 0.1;
 	}
@@ -412,24 +515,28 @@ void mouseMove(int x, int y) {
 void mouseButton(int button, int state, int x, int y) {
 
 	// only start motion if the left button is pressed
-	if (button == GLUT_LEFT) {
+	if (!forapitjar)
+	{
+		if (button == GLUT_LEFT) {
 
-		// when the button is released
-		if (state == GLUT_UP) {
-			angle += deltaAngle;
-			beta += betaAngle;
-			deltaAngle = 0.0f;
-			betaAngle = 0.0f;
-			xOrigin = -1;
-			yOrigin = -1;
+			// when the button is released
+			if (state == GLUT_UP) {
+				angle += deltaAngle;
+				beta += betaAngle;
+				deltaAngle = 0.0f;
+				betaAngle = 0.0f;
+				xOrigin = -1;
+				yOrigin = -1;
 
-		}
-		else {// state = GLUT_DOWN
+			}
+			else {// state = GLUT_DOWN
 
-			xOrigin = x;
-			yOrigin = y;
+				xOrigin = x;
+				yOrigin = y;
+			}
 		}
 	}
+	
 
 }
 
