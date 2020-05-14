@@ -61,14 +61,23 @@ float dz;
 float dt = 0.01;
 
 float a = 10;
-float b = 28;
-float c = 8/3;
+float b = 5;
+float c = 8.0/3.0;
 struct Point
 {
 	float x, y,z;
 	//unsigned char r, g, b, a;
 };
 std::vector< Point > points;
+
+//Trajectoria
+const int trajectoryLenght = 1000;
+float trajectoryX[trajectoryLenght];
+float trajectoryY[trajectoryLenght];
+float trajectoryZ[trajectoryLenght];
+
+int indexQ2 = 0;
+
 
 //==============================================================//
 
@@ -202,7 +211,23 @@ void pintarObjecte() {
 	glutWireCube(0.5);
 	glPopMatrix();
 
-	//glVertex3fv(po[1]);
+	 glPushMatrix();
+	 for (size_t i = 0; i < trajectoryLenght; i++) {
+		 if (trajectoryX[i] != NULL) {
+			 printf("%f , %f , %f \n", xlorenz, ylorenz, zlorenz);
+			 printf("%f , %f , %f \n", trajectoryX[i], trajectoryY[i], trajectoryZ[i]);
+			 printf("--------------\n");
+			 printf("%f, \n", sizeof(trajectoryX));
+
+			 glPointSize(10);
+			 glScalef(0.1, 0.1, 0.01);
+			 glBegin(GL_POINTS);
+			 glColor3f(1.0f, 0.0f, 0.0f);
+			 glVertex3f(trajectoryX[i], trajectoryY[i], trajectoryZ[i]);
+			 glEnd();
+		 }
+	 }
+	 glPopMatrix();
 }
 //=======================//
 
@@ -269,13 +294,13 @@ void computePos(float deltaMove) {
 void renderScene2() {
 	//printf("%f", z);
 	// Draw ground
-	glColor3f(0.0f, 0.6f, 0.0f);
+	/*glColor3f(0.0f, 0.6f, 0.0f);
 	glBegin(GL_QUADS);
 	glVertex3f(-100.0f, 0.0f, -100.0f);
 	glVertex3f(-100.0f, 0.0f, 100.0f);
 	glVertex3f(100.0f, 0.0f, 100.0f);
 	glVertex3f(100.0f, 0.0f, -100.0f);
-	glEnd();
+	glEnd();*/
 
 	//drawSnowMan();
 	//pintarObjecte();
@@ -405,6 +430,12 @@ void renderScenesw1() {
 void renderSceneAll() {
 	fAnguloFig2 += 3.0f;
 	fAnguloFig2 = decrementarAngulo(fAnguloFig2);
+
+	/////////////
+	 trajectoryX[indexQ2 % trajectoryLenght] = xlorenz;
+	 trajectoryY[indexQ2 % trajectoryLenght] = ylorenz;
+	 trajectoryZ[indexQ2 % trajectoryLenght] = zlorenz;
+	/////////////
 	if (prespect >=6)
 	{
 		prespect = 1;
@@ -415,11 +446,11 @@ void renderSceneAll() {
 	dy = (xlorenz * (b - zlorenz) - ylorenz) * dt;
 	dz = (xlorenz * ylorenz - c * z)* dt;
 
-	xlorenz = xlorenz + dx * 0.1;
-	ylorenz = ylorenz + dy * 0.1;
-	zlorenz = zlorenz + dz * 0.1;
+	xlorenz = xlorenz + dx ;
+	ylorenz = ylorenz + dy ;
+	zlorenz = zlorenz + dz;
 
-	points.push_back(Point{ xlorenz, ylorenz, zlorenz });
+	//points.push_back(Point{ xlorenz, ylorenz, zlorenz });
 
 	//printf("%f", xlorenz);
 
