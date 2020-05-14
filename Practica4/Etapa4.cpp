@@ -61,14 +61,23 @@ float dz;
 float dt = 0.01;
 
 float a = 10;
-float b = 28;
-float c = 8/3;
+float b = 5;
+float c = 8.0 / 3.0;
 struct Point
 {
-	float x, y,z;
+	float x, y, z;
 	//unsigned char r, g, b, a;
 };
 std::vector< Point > points;
+
+//Trajectoria
+const int trajectoryLenght = 1000;
+float trajectoryX[trajectoryLenght];
+float trajectoryY[trajectoryLenght];
+float trajectoryZ[trajectoryLenght];
+
+int indexQ2 = 0;
+
 
 //==============================================================//
 
@@ -118,8 +127,8 @@ void changeSize(int w1, int h1) {
 	// set subwindow 1 as the active window
 	// resize and reposition the sub window
 	//glutPositionWindow(border, border);
-	glutReshapeWindow(w,h);
-	setProjection(w,h);
+	glutReshapeWindow(w, h);
+	setProjection(w, h);
 }
 //==================================================//
 
@@ -202,7 +211,23 @@ void pintarObjecte() {
 	glutWireCube(0.5);
 	glPopMatrix();
 
-	//glVertex3fv(po[1]);
+	glPushMatrix();
+	for (size_t i = 0; i < trajectoryLenght; i++) {
+		if (trajectoryX[i] != NULL) {
+			printf("%f , %f , %f \n", xlorenz, ylorenz, zlorenz);
+			printf("%f , %f , %f \n", trajectoryX[i], trajectoryY[i], trajectoryZ[i]);
+			printf("--------------\n");
+			printf("%f, \n", sizeof(trajectoryX));
+
+			glPointSize(10);
+			glScalef(0.1, 0.1, 0.01);
+			glBegin(GL_POINTS);
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glVertex3f(trajectoryX[i], trajectoryY[i], trajectoryZ[i]);
+			glEnd();
+		}
+	}
+	glPopMatrix();
 }
 //=======================//
 
@@ -269,18 +294,18 @@ void computePos(float deltaMove) {
 void renderScene2() {
 	//printf("%f", z);
 	// Draw ground
-	glColor3f(0.0f, 0.6f, 0.0f);
+	/*glColor3f(0.0f, 0.6f, 0.0f);
 	glBegin(GL_QUADS);
 	glVertex3f(-100.0f, 0.0f, -100.0f);
 	glVertex3f(-100.0f, 0.0f, 100.0f);
 	glVertex3f(100.0f, 0.0f, 100.0f);
 	glVertex3f(100.0f, 0.0f, -100.0f);
-	glEnd();
+	glEnd();*/
 
 	//drawSnowMan();
 	//pintarObjecte();
 	//glTranslatef(0, 2.0, 0.0);
-	
+
 	if (forapitjar)
 	{
 		glTranslatef(0.0, 2.0f, 0.0);
@@ -288,7 +313,7 @@ void renderScene2() {
 	else {
 		glTranslatef(0.0, 0.75f, 0.0);
 	}
-	
+
 	draw_table();
 	pintarObjecte();
 	// Draw 36 SnowMen
@@ -364,7 +389,7 @@ void renderScenesw1() {
 	if (forapitjar)
 	{
 		perspectiva();
-		
+
 	}
 	else
 	{
@@ -373,7 +398,7 @@ void renderScenesw1() {
 			0, 1, 0);
 
 	}
-	
+
 
 	renderScene2();
 
@@ -405,21 +430,27 @@ void renderScenesw1() {
 void renderSceneAll() {
 	fAnguloFig2 += 3.0f;
 	fAnguloFig2 = decrementarAngulo(fAnguloFig2);
-	if (prespect >=6)
+
+	/////////////
+	trajectoryX[indexQ2 % trajectoryLenght] = xlorenz;
+	trajectoryY[indexQ2 % trajectoryLenght] = ylorenz;
+	trajectoryZ[indexQ2 % trajectoryLenght] = zlorenz;
+	/////////////
+	if (prespect >= 6)
 	{
 		prespect = 1;
 	}
 	//Lorenz
 
-	dx = (a * (ylorenz- xlorenz) * dt);
+	dx = (a * (ylorenz - xlorenz) * dt);
 	dy = (xlorenz * (b - zlorenz) - ylorenz) * dt;
-	dz = (xlorenz * ylorenz - c * z)* dt;
+	dz = (xlorenz * ylorenz - c * z) * dt;
 
-	xlorenz = xlorenz + dx * 0.1;
-	ylorenz = ylorenz + dy * 0.1;
-	zlorenz = zlorenz + dz * 0.1;
+	xlorenz = xlorenz + dx;
+	ylorenz = ylorenz + dy;
+	zlorenz = zlorenz + dz;
 
-	points.push_back(Point{ xlorenz, ylorenz, zlorenz });
+	//points.push_back(Point{ xlorenz, ylorenz, zlorenz });
 
 	//printf("%f", xlorenz);
 
@@ -433,7 +464,7 @@ void renderSceneAll() {
 			glutPostRedisplay();
 		}
 	}
-	
+
 
 
 	renderScenesw1();
@@ -448,14 +479,14 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 
 	if (key == 27) // si apretes ESC te tanca sa finestra
 	{
-	
+
 		exit(0);
 	}
 	if (key == 'p')
 	{
 		forapitjar = !forapitjar;
 		prespect = 1;
-		
+
 	}
 	if (key == 'n') {
 		prespect = prespect + 1;
@@ -536,7 +567,7 @@ void mouseButton(int button, int state, int x, int y) {
 			}
 		}
 	}
-	
+
 
 }
 
