@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -8,6 +8,8 @@
 #include <GL/glut.h>
 #endif
 
+//////////////////////////////////////////////////////////////////
+//                               DEFINICI� DE VARIABLES         //
 #define BASE_HEIGHT  0.25
 #define BASE_WIDE    0.05
 
@@ -22,7 +24,7 @@ GLdouble lx = 0.0f, lz = -1.0f, ly = 0.0f;
 GLdouble x = 0.0f, z = 5.0f, y = 2.5f;
 
 // the key states. These variables will be zero
-//when no key is being presses
+// when no key is being presses
 float deltaAngle = 0.0f;
 float deltaMove = 0;
 int xOrigin = -1;
@@ -39,10 +41,26 @@ char s[50];
 int mainWindow, subWindow1, subWindow2, subWindow3;
 //border between subwindows
 int border = 5;
-
 //nombre per decidir quina figura pintam
 int figura = 1;
+//==============================================================//
 
+
+
+///////////////////////////////////////////////////////////////////////////////
+//							EXPERIMENT COORD ESF�RIQUES						 //
+GLdouble PI = 3.1415926535897932384626433832795;
+GLdouble beta = PI / 2;
+// Tecles d'estat. Aquestes variables seran 0 quan no s'apretin les tecles
+float betaAngle = 0.0f;
+int yOrigin = -1;
+//===========================================================================//
+
+
+
+//////////////////////////////////////////////////////
+//                                RESHAPE           //
+// Aquesta funci� l'usarem pes reshape des viewport //
 void setProjection(int w1, int h1)
 {
 	float ratio;
@@ -50,17 +68,17 @@ void setProjection(int w1, int h1)
 	// (you cant make a window of zero width).
 	ratio = 1.0f * w1 / h1;
 	// Reset the coordinate system before modifying
-	glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_PROJECTION); //ProjectionView is the matrix that represents your camera's lens (aperture, far-field, near-field, etc).
 	glLoadIdentity();
 
 	// Set the viewport to be the entire window
 	glViewport(0, 0, w1, h1);
 
 	// Set the clipping volume
-	gluPerspective(45, ratio, 0.1, 1000);
-	glMatrixMode(GL_MODELVIEW);
+	gluPerspective(45, ratio, 0.1, 1000); //Referent a s'entorn, com el veus
+	glMatrixMode(GL_MODELVIEW); //ModelView is the matrix that represents your camera (position, pointing, and up vector).
 }
-
+//Lo que a ses anteriors etapes li deiem reshape :D //
 void changeSize(int w1, int h1) {
 
 	if (h1 == 0)
@@ -71,32 +89,18 @@ void changeSize(int w1, int h1) {
 	h = h1;
 
 	// set subwindow 1 as the active window
-	glutSetWindow(subWindow1);
 	// resize and reposition the sub window
-	glutPositionWindow(border, border);
-	glutReshapeWindow(w - 2 * border, h / 2 - border * 3 / 2);
-	setProjection(w - 2 * border, h / 2 - border * 3 / 2);
-
-	// set subwindow 2 as the active window
-	glutSetWindow(subWindow2);
-	// resize and reposition the sub window
-	glutPositionWindow(border, (h + border) / 2);
-	glutReshapeWindow(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
-	setProjection(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
-
-	// set subwindow 3 as the active window
-	glutSetWindow(subWindow3);
-	// resize and reposition the sub window
-	glutPositionWindow((w + border) / 2, (h + border) / 2);
-	glutReshapeWindow(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
-	setProjection(w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
+	//glutPositionWindow(border, border);
+	glutReshapeWindow(w,h);
+	setProjection(w,h);
 }
+//==================================================//
 
-////////////////////////////////////////////// 
-// 
-// The following two functions are to draw a table 
 
-// draw a table leg
+
+/////////////////////////////////////////////////////////////////////
+// Les seg�ents dues funcions ens serviran per dibuixar les taules //
+// Com construim una pota de la taula                              //
 void draw_leg(float xt, float yt, float zt)
 {
 	glPushMatrix();
@@ -105,15 +109,13 @@ void draw_leg(float xt, float yt, float zt)
 	glutSolidCube(1.0);
 	glPopMatrix();
 }
-
-
-//   draw a table - one table top with four legs
+//   Construim l'objecte taula a partir de les potes definides     //
 void draw_table()
 {
-	glColor4f(.5, .5, .5, 1);
+	glColor4f(.82, .60, .16, 1);
 
 	glPushMatrix();
-	glTranslatef(0,-0.25,0);
+	glTranslatef(0, -0.25, 0);
 	glScalef(1, 0.1, 1);
 	glutSolidCube(1.0);
 	glPopMatrix();
@@ -123,9 +125,12 @@ void draw_table()
 	draw_leg(-0.45, -0.5, -0.45);
 	draw_leg(-0.45, -0.5, 0.45);
 }
-///////////////////////////////////////////
+//=================================================================//
 
 
+
+//////////////////////////////////////
+// Si volguessim fer ninots de neu: //
 void drawSnowMan() {
 
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -148,28 +153,32 @@ void drawSnowMan() {
 	glPopMatrix();
 
 	// Draw Nose
-	glColor3f(1.0f,0.6f,0.1f);
+	glColor3f(1.0f, 0.6f, 0.1f);
 	glRotatef(0.0f, 1.0f, 0.0f, 0.0f);
 	glutSolidCone(0.08f, 0.5f, 10, 2);
 
 	glColor3f(1.0f, 1.0f, 1.0f);
 
 }
+//==================================//
+
+
+///////////////////////////
+// EL CUB SOBRE LA TAULA //
 void pintarObjecte() {
-	
+
 	glPushMatrix();
 	glScalef(0.5, 0.5, 0.5);
 	glRotated(70, 0, 0.5, 0.5);
 	glRotatef(fAnguloFig2, 0.3f, 0.0f, 0.5f);
-	glColor3f(0.0f, 0.0f, 0.25f);
+	glColor3f(1.0f, 1.0f, 1.0f);
 	glutWireCube(0.5);
 	glPopMatrix();
-	
-	
 }
-void bot() {
-	y += 0.1;
-}
+//=======================//
+
+
+
 GLfloat decrementarAngulo(GLfloat angulo) {
 	if (angulo > 360) {
 		angulo -= 360;
@@ -177,19 +186,20 @@ GLfloat decrementarAngulo(GLfloat angulo) {
 	return angulo;
 }
 
-void renderBitmapString(
-	float x,
-	float y,
-	float z,
-	void* font,
-	char* string) {
 
+
+/////////////////////////////////////////////////////////////////////////////////
+//           Aix� crec que se usar� per printar es FPS per pantalla            //
+void renderBitmapString(float x, float y, float z, void* font, char* string) {
 	char* c;
 	glRasterPos3f(x, y, z);
 	for (c = string; *c != '\0'; c++) {
 		glutBitmapCharacter(font, *c);
 	}
 }
+//=============================================================================//
+
+
 
 void restorePerspectiveProjection() {
 
@@ -229,10 +239,7 @@ void computePos(float deltaMove) {
 // Common Render Items for all subwindows
 void renderScene2() {
 
-	
-
 	// Draw ground
-
 	glColor3f(0.0f, 0.6f, 0.0f);
 	glBegin(GL_QUADS);
 	glVertex3f(-100.0f, 0.0f, -100.0f);
@@ -257,9 +264,9 @@ void renderScene2() {
 			glPopMatrix();
 		}
 	}
-	
+
 	draw_table();
-	
+
 	// Draw 36 SnowMen
 	/*for (int i = -3; i < 3; i++)
 		for (int j = -3; j < 3; j++)
@@ -273,7 +280,7 @@ void renderScene2() {
 
 // Display func for main window
 void renderScene() {
-	glutSetWindow(mainWindow);
+
 	glClear(GL_COLOR_BUFFER_BIT);
 	glutSwapBuffers();
 }
@@ -281,19 +288,25 @@ void renderScene() {
 // Display func for sub window 1
 void renderScenesw1() {
 
-	glutSetWindow(subWindow1);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
+	/*
 	gluLookAt(x, y, z,
 		x + lx, y + ly, z + lz,
-		0.0f, 1.0f, 0.0f);
+		-(x + lx) * (y + ly), (y + ly) * (z + lz), -(x + lx) * (y + ly)); //permetre que la normal varii sent sempre ortogonal al vector de la visi� de la camara
+	*/
+
+	gluLookAt(x, y, z,
+		x + lx, y + ly, z + lz,
+		0, 1, 0);
+
 
 	renderScene2();
 
 	// display fps in the top window
-	frame++;
+	/*frame++;
 
 	time = glutGet(GLUT_ELAPSED_TIME);
 	if (time - timebase > 1000) {
@@ -301,66 +314,16 @@ void renderScenesw1() {
 			frame * 1000.0 / (time - timebase));
 		timebase = time;
 		frame = 0;
-	}
+	}*/
 
 	setOrthographicProjection();
 
 	glPushMatrix();
 	glLoadIdentity();
-	renderBitmapString(5, 30, 0, GLUT_BITMAP_HELVETICA_12, s);
+	//renderBitmapString(5, 30, 0, GLUT_BITMAP_HELVETICA_12, s); // Aix� crec que �s lo que mostra es FPS
 	glPopMatrix();
 
 	restorePerspectiveProjection();
-
-	glutSwapBuffers();
-}
-
-// Display func for sub window 2
-void renderScenesw2() {
-
-	glutSetWindow(subWindow2);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glLoadIdentity();
-	gluLookAt(x, y + 15, z,
-		x, y - 1, z,
-		lx, 0, lz);
-
-	// Draw red cone at the location of the main camera
-	glPushMatrix();
-	glColor3f(1.0, 0.0, 0.0);
-	glTranslatef(x, y, z);
-	glRotatef(180 - (angle + deltaAngle) * 180.0 / 3.14, 0.0, 1.0, 0.0);
-	glutSolidCone(0.2, 0.8f, 4, 4);
-	glPopMatrix();
-
-	renderScene2();
-
-	glutSwapBuffers();
-}
-
-// Display func for sub window 3
-void renderScenesw3() {
-
-	glutSetWindow(subWindow3);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glLoadIdentity();
-	gluLookAt(x - lz * 10, y, z + lx * 10,
-		x, y, z,
-		0.0f, 1.0f, 0.0f);
-
-	// Draw red cone at the location of the main camera
-	glPushMatrix();
-	glColor3f(1.0, 0.0, 0.0);
-	glTranslatef(x, y, z);
-	glRotatef(180 - (angle + deltaAngle) * 180.0 / 3.14, 0.0, 1.0, 0.0);
-	glutSolidCone(0.2, 0.8f, 4, 4);
-	glPopMatrix();
-
-	renderScene2();
 
 	glutSwapBuffers();
 }
@@ -371,17 +334,16 @@ void renderSceneAll() {
 	fAnguloFig2 += 3.0f;
 	fAnguloFig2 = decrementarAngulo(fAnguloFig2);
 
+
 	// check for keyboard movement
 	if (deltaMove) {
 		computePos(deltaMove);
-		glutSetWindow(mainWindow);
 		glutPostRedisplay();
 	}
 
-	renderScene();
+
 	renderScenesw1();
-	renderScenesw2();
-	renderScenesw3();
+
 }
 
 // -----------------------------------
@@ -390,13 +352,18 @@ void renderSceneAll() {
 
 void processNormalKeys(unsigned char key, int xx, int yy) {
 
-	if (key == 27) {
+	if (key == 27) // si apretes ESC te tanca sa finestra
+	{
 		glutDestroyWindow(mainWindow);
 		exit(0);
 	}
-	if (key == 'a' ) 
+	if (key == 'a')
 	{
-		bot();
+		y += 0.1;
+	}
+	if (key == 'z' && y >= 2.5) //sa segona condicio es perque no pugui baixar si no ha pujat, que no traspassi es terra.
+	{
+		y -= 0.1;
 	}
 }
 
@@ -406,10 +373,10 @@ void pressKey(int key, int xx, int yy) {
 	case GLUT_KEY_UP: deltaMove = 0.5f; break;
 	case GLUT_KEY_DOWN: deltaMove = -0.5f; break;
 	}
-	glutSetWindow(mainWindow);
 	glutPostRedisplay();
 
 }
+
 
 void releaseKey(int key, int x, int y) {
 
@@ -418,6 +385,7 @@ void releaseKey(int key, int x, int y) {
 	case GLUT_KEY_DOWN: deltaMove = 0; break;
 	}
 }
+
 
 // -----------------------------------
 //             MOUSE
@@ -430,12 +398,13 @@ void mouseMove(int x, int y) {
 
 		// update deltaAngle
 		deltaAngle = (x - xOrigin) * 0.001f;
+		betaAngle = (y - yOrigin) * 0.001f;
 
 		// update camera's direction
-		lx = sin(angle + deltaAngle);
-		lz = -cos(angle + deltaAngle);
+		lx = sin(angle + deltaAngle) * sin(beta + betaAngle);
+		lz = -cos(angle + deltaAngle) * sin(beta + betaAngle);
+		ly = cos(beta + betaAngle);
 
-		glutSetWindow(mainWindow);
 		glutPostRedisplay();
 	}
 }
@@ -448,15 +417,27 @@ void mouseButton(int button, int state, int x, int y) {
 		// when the button is released
 		if (state == GLUT_UP) {
 			angle += deltaAngle;
+			beta += betaAngle;
 			deltaAngle = 0.0f;
+			betaAngle = 0.0f;
 			xOrigin = -1;
-		}
-		else {// state = GLUT_DOWN
-			xOrigin = x;
+			yOrigin = -1;
 
 		}
+		else {// state = GLUT_DOWN
+
+			xOrigin = x;
+			yOrigin = y;
+		}
 	}
+
 }
+
+
+
+
+
+
 
 // -----------------------------------
 //             MAIN and INIT
@@ -478,34 +459,22 @@ void init() {
 }
 
 int main(int argc, char** argv) {
-
 	// init GLUT and create main window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(800, 800);
-	mainWindow = glutCreateWindow("Etapa4");
+	glutCreateWindow("Etapa4");
 
 	// callbacks for main window
-	glutDisplayFunc(renderSceneAll);
+	glutDisplayFunc(renderScene2);
 	glutReshapeFunc(changeSize);
 
 	// Removing the idle function to save CPU and GPU
 	glutIdleFunc(renderSceneAll);
+
 	init();
 
-	// sub windows
-	subWindow1 = glutCreateSubWindow(mainWindow, border, border, w - 2 * border, h / 2 - border * 3 / 2);
-	glutDisplayFunc(renderScenesw1);
-	init();
-
-	subWindow2 = glutCreateSubWindow(mainWindow, border, (h + border) / 2, w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
-	glutDisplayFunc(renderScenesw2);
-	init();
-
-	subWindow3 = glutCreateSubWindow(mainWindow, (w + border) / 2, (h + border) / 2, w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
-	glutDisplayFunc(renderScenesw3);
-	init();
 
 	// enter GLUT event processing cycle
 	glutMainLoop();
