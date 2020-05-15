@@ -48,7 +48,7 @@ int figura = 1;
 
 bool forapitjar = false;
 int prespect = 1;
-
+bool freeview = false;
 //Lorenz Atracctor
 float xlorenz = 0.01;
 float ylorenz = 0;
@@ -210,7 +210,7 @@ void pintarObjecte() {
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glutWireCube(0.5);
 	glPopMatrix();
-
+	/*
 	glPushMatrix();
 	for (size_t i = 0; i < trajectoryLenght; i++) {
 		if (trajectoryX[i] != NULL) {
@@ -226,7 +226,7 @@ void pintarObjecte() {
 			glVertex3f(trajectoryX[i], trajectoryY[i], trajectoryZ[i]);
 			glEnd();
 		}
-	}
+	}*/
 	glPopMatrix();
 }
 //=======================//
@@ -288,6 +288,16 @@ void computePos(float deltaMove) {
 
 	x += deltaMove * lx * 0.1f;
 	z += deltaMove * lz * 0.1f;
+	//Si volem camera free view
+	if (freeview)
+	{
+		y += deltaMove * ly * 0.1f;
+	}
+	else
+	{
+		y = 1.5;
+	}
+	
 }
 
 // Common Render Items for all subwindows
@@ -316,15 +326,7 @@ void renderScene2() {
 
 	draw_table();
 	pintarObjecte();
-	// Draw 36 SnowMen
-	/*for (int i = -3; i < 3; i++)
-		for (int j = -3; j < 3; j++)
-		{
-			glPushMatrix();
-			glTranslatef(i * 10.0f, 0.0f, j * 10.0f);
-			drawSnowMan();
-			glPopMatrix();
-		}*/
+
 }
 
 void perspectiva() {
@@ -491,20 +493,21 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 	if (key == 'n') {
 		prespect = prespect + 1;
 	}
-	if (key == 'a')
-	{
-		y += 0.1;
+	if (key == ' ') {
+		//allibera eix y
+
+		freeview = !freeview;
+
 	}
-	if (key == 'z'/* && y >= 2.5*/) //sa segona condicio es perque no pugui baixar si no ha pujat, que no traspassi es terra.
-	{
-		y -= 0.1;
-	}
+	
+
 }
 
 void pressKey(int key, int xx, int yy) {
 
 	switch (key) {
 	case GLUT_KEY_UP: deltaMove = 0.5f; break;
+	//case GLUT_KEY_RIGHT: deltaMove = 0.5f; break;
 	case GLUT_KEY_DOWN: deltaMove = -0.5f; break;
 	}
 	glutPostRedisplay();
