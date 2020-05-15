@@ -26,8 +26,7 @@ GLfloat difuseLight[] = { 0.8f, 0.8f, 0.8f, 1.0f };
 
 GLfloat lightPosition0[] = { 0.8f, 0.0f, 0.0f };
 
-bool shade = false;
-bool light1 = false;
+bool shade = false; 
 
 void reshape(int w, int h) {
 
@@ -123,11 +122,6 @@ void Display(void)
 	glColor3f(1.0f, 1.0f, 0.0f);
 	glutSolidSphere(0.08f, 20, 20);
 	glPopMatrix();
-	
-	/*glPushMatrix();
-	//printAxis();
-	printSolidSphere();
-	glPopMatrix();*/
 
 	glPushMatrix();
 	glScalef(0.5, 0.5, 0.5);
@@ -274,7 +268,6 @@ int main(int argc, char** argv)
 	glEnable(GL_LIGHT0);
 
 	glEnable(GL_LIGHT2);
-	glEnable(GL_LIGHT3);
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
