@@ -172,13 +172,25 @@ void drawCircularTree(float x, float y, float z) {
 	glPushMatrix();
 	glColor3f(0.6, 0.3, 0.1);
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
-	drawCylinder(6, 16, 10.0, 0.3);
+	drawCylinder(6, 16, 12.0, 0.3);
 
+	glPushMatrix();
 	glColor3f(0.0, 0.3, 0.0);
-	glTranslatef(0.0, 0.0, -6.0);
+	glTranslatef(0.0, 0.0, -8.5);
 	glutSolidSphere(2.0, 20, 20);
 	glPopMatrix();
 
+	glPushMatrix();
+	glTranslatef(1.0, 0.0, -6.5);
+	glutSolidSphere(2.0, 20, 20);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(-1.0, 0.0, -6.5);
+	glutSolidSphere(2.0, 20, 20);
+	glPopMatrix();
+
+	glPopMatrix();
 	glPopMatrix();
 }
 //==========================================================================//
