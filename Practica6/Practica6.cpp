@@ -128,6 +128,8 @@ void drawCylinder(int numMajor, int numMinor, float height, float radius) {
 
 // FAROLA
 void draw_streetlight() {
+
+	glPushMatrix();
 	glColor3f(0.5, 0.5, 0.5);
 
 	glRotatef(-90, 1, 0, 0);
@@ -159,6 +161,24 @@ void draw_streetlight() {
 	glColor3f(1, 0.9, 0);
 	glScalef(0.2, 0.4, 0.2);
 	glutSolidOctahedron();
+	glPopMatrix();
+	glPopMatrix();
+}
+
+void drawCircularTree(float x, float y, float z) {
+	glPushMatrix();
+	glTranslatef(x, y, z);
+
+	glPushMatrix();
+	glColor3f(0.6, 0.3, 0.1);
+	glRotatef(90, 1.0f, 0.0f, 0.0f);
+	drawCylinder(6, 16, 10.0, 0.3);
+
+	glColor3f(0.0, 0.3, 0.0);
+	glTranslatef(0.0, 0.0, -6.0);
+	glutSolidSphere(2.0, 20, 20);
+	glPopMatrix();
+
 	glPopMatrix();
 }
 //==========================================================================//
@@ -235,6 +255,12 @@ void renderScene2() {
 
 	// Farola
 	draw_streetlight();
+
+	drawCircularTree(2.5f, 0.0f, 0.0f);
+	drawCircularTree(9.5f, 0.0f, 0.0f);
+	drawCircularTree(15.5f, 0.0f, 0.0f);
+	drawCircularTree(25.5f, 0.0f, 0.0f);
+	drawCircularTree(35.5f, 0.0f, 0.0f);
 }
 
 // Display func for main window
