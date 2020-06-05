@@ -126,6 +126,51 @@ void drawCylinder(int numMajor, int numMinor, float height, float radius) {
 	}
 }
 
+void drawPyramid(float x, float y, float z) {
+
+	glPushMatrix();
+
+	glBegin(GL_QUADS);
+	glVertex3d(-4, 0, -4);//4
+	glVertex3d(-4, 0, 4);//3
+	glVertex3d(4, 0, 4);//2
+	glVertex3d(4, 0, -4);//1
+	glEnd();
+
+	//--------Cara 4 
+	glBegin(GL_TRIANGLES);
+	//vértices en 3d
+	glVertex3d(0, 4, 0);
+	glVertex3d(-4, 0, -4);//1
+	glVertex3d(4, 0, -4);//4
+	glEnd();
+
+	//--------Cara 1
+	glBegin(GL_TRIANGLES);
+	//vértices en 3d
+	glVertex3d(0, 4, 0);
+	glVertex3d(4, 0, -4);
+	glVertex3d(4, 0, 4);
+	glEnd();
+
+	//--------Cara 3
+	glBegin(GL_TRIANGLES);
+	//vértices en 3d
+	glVertex3d(0, 4, 0);
+	glVertex3d(-4, 0, 4);
+	glVertex3d(-4, 0, -4);
+	glEnd();
+
+	//-------Cara 2
+	glBegin(GL_TRIANGLES);
+	//vértices en 3d
+	glVertex3d(0, 4, 0);
+	glVertex3d(4, 0, 4);
+	glVertex3d(-4, 0, 4);
+	glEnd();
+	glPopMatrix();
+}
+
 // FAROLA
 void draw_streetlight() {
 
@@ -201,13 +246,33 @@ void drawTriangularTree(float x, float y, float z) {
 	glPushMatrix();
 	glColor3f(0.6, 0.3, 0.1);
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
-	drawCylinder(6, 16, 10.0, 0.3);
-
+	drawCylinder(6, 16, 8.0, 0.3);
+	
+	//Primera pirámide
+	glPushMatrix();
 	glColor3f(0.0, 0.3, 0.0);
-	glTranslatef(0.0, 0.0, -6.0);
-	//glutSolid(2.0, 20, 20);
+	glTranslatef(0.0, 0.0, -4.0);
+	glRotatef(-90, 1.0f, 0.0f, 0.0f);
+	drawPyramid(0.0, 0.0f, 0.0f);
 	glPopMatrix();
 
+	//Segunda pirámide
+	glPushMatrix();
+	glColor3f(0.0, 0.3, 0.0);
+	glTranslatef(0.0, 0.0, -6.0);
+	glRotatef(-90, 1.0f, 0.0f, 0.0f);
+	drawPyramid(0.0, 0.0f, 0.0f);
+	glPopMatrix();
+
+	//Tercera Pirámide
+	glPushMatrix();
+	glColor3f(0.0, 0.3, 0.0);
+	glTranslatef(0.0, 0.0, -8.0);
+	glRotatef(-90, 1.0f, 0.0f, 0.0f);
+	drawPyramid(0.0, 0.0f, 0.0f);
+	glPopMatrix();
+
+	glPopMatrix();
 	glPopMatrix();
 }
 //==========================================================================//
@@ -290,6 +355,9 @@ void renderScene2() {
 	drawCircularTree(15.5f, 0.0f, 0.0f);
 	drawCircularTree(25.5f, 0.0f, 0.0f);
 	drawCircularTree(35.5f, 0.0f, 0.0f);
+
+	drawTriangularTree(-9.5f, 0.0f, 0.0f);
+	drawTriangularTree(-25.5f, 0.0f, 0.0f);
 }
 
 // Display func for main window
