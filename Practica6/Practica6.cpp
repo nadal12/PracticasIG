@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "tgload.h"
-#
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -47,14 +46,12 @@ int border = 6;
 #define MAX_NO_TEXTURES 8
 
 #define CDAV 0
-#define CDRE  1
+#define CDRE 1
 #define CDAR 2
 #define CESQ 3
-#define CDAV 4
 #define CADA 5
 
 GLuint texture_id[MAX_NO_TEXTURES];
-
 
 void initTexture(void)
 {
@@ -96,9 +93,7 @@ void initTexture(void)
 
 	glBindTexture(GL_TEXTURE_2D, texture_id[CADA]);
 	tgaLoad("skybox2_py.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
-
 }
-
 
 void DesenhaCubo(GLuint nro_da_textura)
 
@@ -329,6 +324,7 @@ void draw_streetlight(float x, float y, float z) {
 	glTranslatef(0, 0, 1.8);
 	glColor3f(1, 0.9, 0);
 	glScalef(0.2, 0.4, 0.2);
+	//Fer aqui 
 	glutSolidOctahedron();
 	glPopMatrix();
 	glPopMatrix();
@@ -554,7 +550,7 @@ void renderItems() {//======================================================//
 	// Terra
 	
 	glPushMatrix();
-	glColor3f(0.0f, 0.6f, 0.0f);
+	glColor3f(1.0f, 0.6f, 0.0f);
 	glBegin(GL_QUADS);
 	glVertex3f(-100.0f, 0.0f, -100.0f);
 	glVertex3f(-100.0f, 0.0f, 100.0f);
@@ -622,7 +618,7 @@ void renderScenesw1() {
 
 	glLoadIdentity();
 	gluLookAt(x, y, z,
-		x + lx, y + ly, z + lz,
+		(GLdouble)x + lx, (GLdouble)y + ly, (GLdouble)z + lz,
 		0.0f, 1.0f, 0.0f);
 
 	
@@ -632,7 +628,7 @@ void renderScenesw1() {
 	time = glutGet(GLUT_ELAPSED_TIME);
 	if (time - timebase > 1000) {
 		sprintf_s(s, "Lighthouse3D - FPS:%4.2f",
-			frame * 1000.0 / (time - timebase));
+			frame * 1000.0 / (time - (GLdouble) timebase));
 		timebase = time;
 		frame = 0;
 	}
@@ -663,15 +659,15 @@ void renderScenesw2() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(x, y + 13, z,
-		x, y - 1, z,
+	gluLookAt(x, (GLdouble) y + 13, z,
+		x, (GLdouble) y - 1, z,
 		lx, 0, lz);
 
 	// Draw red cone at the location of the main camera
 	glPushMatrix();
 	glColor3f(1.0, 0.0, 0.0);
 	glTranslatef(x, y, z);
-	glRotatef(180 - (angle + deltaAngle) * 180.0 / 3.14, 0.0, 1.0, 0.0);
+	glRotatef(180 - ((double)angle + deltaAngle) * 180.0 / 3.14, 0.0, 1.0, 0.0);
 	glutSolidCone(0.2, 0.8f, 4, 4);
 	glPopMatrix();
 
@@ -720,7 +716,6 @@ void renderSceneAll() {
 	//renderScenesw3();
 }
 
-
 void Idle(void) {
 	// Incrementamos el ángulo
 	fAngulo += 1.0f;
@@ -731,8 +726,6 @@ void Idle(void) {
 	glutPostRedisplay();
 }
 //======================================================//
-
-
 
 // -----------------------------------
 //             KEYBOARD
@@ -753,14 +746,13 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 void pressKey(int key, int xx, int yy) {
 
 	switch (key) {
-	case GLUT_KEY_UP: deltaMove = 10.5f; break;
+	case GLUT_KEY_UP: deltaMove = 0.5f; break;
 	case GLUT_KEY_DOWN: deltaMove = -0.5f; break;
 	case GLUT_KEY_RIGHT: gammaMove = -0.5f; break;
 	case GLUT_KEY_LEFT: gammaMove = 0.5f; break;
 	}
 	glutSetWindow(mainWindow);
 	glutPostRedisplay();
-
 }
 
 void releaseKey(int key, int x, int y) {
@@ -785,12 +777,12 @@ void mouseMove(int x, int y) {
 		// update deltaAngle
 		deltaAngle = (x - xOrigin) * 0.001f;
 		betaAngle = (y - yOrigin) * 0.001f;
-
+		
 		// update camera's direction
-		lx = sin(angle + deltaAngle) * sin(beta + betaAngle);
-		lz = -cos(angle + deltaAngle) * sin(beta + betaAngle);
+		lx = sin((double) angle + deltaAngle) * sin(beta + betaAngle);
+		lz = -cos((double) angle + deltaAngle) * sin(beta + betaAngle);
 		ly = cos(beta + betaAngle);
-		glutSetWindow(mainWindow);
+		glutSetWindow(mainWindow); 
 		glutPostRedisplay();
 	}
 }
