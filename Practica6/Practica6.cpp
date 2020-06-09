@@ -488,7 +488,7 @@ void renderScene2() {
 	
 	// Farola
 	glPushMatrix();
-	draw_streetlight();
+	draw_streetlight(0,0,0);
 	glPopMatrix();
 	
 	drawCircularTree(2.5f, 0.0f, 0.0f);
