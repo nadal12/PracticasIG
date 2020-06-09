@@ -15,6 +15,9 @@
 // angle of rotation for the camera direction
 float angle = 0.0f;
 
+// angle pel moviment de les aspes del molí: obj articulat
+GLfloat fAngulo;
+
 // actual vector representing the camera's direction
 float lx = 0.0f, lz = -1.0f, ly = 0.0f;
 
@@ -211,7 +214,6 @@ void changeSize(int w1, int h1) {
 	
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 //				TOT LO QUE ÉS PER CONSTRUIR ELS OBJECTES					//
 void drawCylinder(int numMajor, int numMinor, float height, float radius) {
@@ -288,6 +290,10 @@ void drawPyramid(float x, float y, float z) {
 	glPopMatrix();
 }
 
+void drawlightbulb() {
+
+}
+
 // FAROLA
 void draw_streetlight(float x, float y, float z) {
 
@@ -328,6 +334,75 @@ void draw_streetlight(float x, float y, float z) {
 	glPopMatrix();
 }
 
+// Aspa vertical
+void drawBladeV(float x, float y, float z) {
+	glPushMatrix();
+	glTranslatef(x, y, z);
+	glColor3f(1, 1, 1);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(10, 10, 8, 0.04);
+	glPopMatrix();
+}
+//Aspa horitzontal
+void drawBladeH(float x, float y, float z) {
+	glPushMatrix();
+	glTranslatef(x, y, z);
+	glColor3f(1, 1, 1);
+	glRotatef(90, 1, 0, 0);
+	drawCylinder(10, 10, 8, 0.04);
+	glPopMatrix();
+}
+
+// MOLÍ
+void draw_windmill(float x, float y, float z) {
+	glPushMatrix();
+	glTranslatef(x, y, z);
+
+	//Paret
+	glPushMatrix();
+	glColor3f(0.6, 0.3, 0.1);
+	glRotatef(90, 1.0f, 0.0f, 0.0f);
+	drawCylinder(6, 16, 18, 4);
+
+	//Teulada
+	glPushMatrix();
+	glColor3f(0.7, 0.4, 0.2);
+	glTranslatef(0.0, 0.0, -9.0);
+	glRotatef(-180, 1.0f, 0.0f, 0.0f);
+	glutSolidCone(4, 3, 25, 25);
+	glPopMatrix();
+	glPopMatrix();
+
+	//Palito
+	glPushMatrix();
+	glColor3f(0.4, 0.1, -0.1);
+	glTranslatef(0.0, 7.0 , -4.0);
+	drawCylinder(6, 16, 1, 0.1);
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor3f(0.4, 0.1, -0.1);
+	glTranslatef(0.0, 7.0 , -4.5);
+	glutSolidSphere(0.1, 100, 100);
+	glPopMatrix();
+	
+	//Aspes moli
+	glPushMatrix();
+	glTranslatef(0, 7, 0);
+	glRotatef(fAngulo, 0.0f, 0.0f, -1.0f);
+	glTranslatef(0, -7, 0);
+	drawBladeV(0.0, 7.0, -4.5);
+	drawBladeH(0.0, 7.0, -4.5);
+	glPopMatrix();
+
+
+	glPopMatrix();
+}
+
+
+
+
+// ARBRE
 void drawCircularTree(float x, float y, float z) {
 	glPushMatrix();
 	glTranslatef(x, y, z);
@@ -357,6 +432,7 @@ void drawCircularTree(float x, float y, float z) {
 	glPopMatrix();
 }
 
+// CEDRO
 void drawTriangularTree(float x, float y, float z) {
 	glPushMatrix();
 	glTranslatef(x, y, z);
@@ -398,6 +474,12 @@ void drawTriangularTree(float x, float y, float z) {
 
 //==========================================================================//
 
+GLfloat decrementarAngulo(GLfloat angulo) {
+	if (angulo > 360) {
+		angulo -= 360;
+	}
+	return angulo;
+}
 
 void renderBitmapString(
 	float x,
@@ -442,8 +524,11 @@ void setOrthographicProjection() {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+//////////////////////////////////////////////////////////
+//				ACTUALITZACIÓ COORDENADES X i Z			//
 void computePos(float deltaMove,float gammaMove) {
-
+	// deltaMove => moviment eix z
+	// gammaMove => moviment eix x
 	if (deltaMove != 0) {
 		x += deltaMove * lx * 0.1f;
 		z += deltaMove * lz * 0.1f;
@@ -452,7 +537,6 @@ void computePos(float deltaMove,float gammaMove) {
 		x += gammaMove * lz * 0.1f;
 		z += gammaMove * (-lx) * 0.1f;
 	}
-
 	//Si volem camera free view
 	if (freeview)
 	{
@@ -463,8 +547,7 @@ void computePos(float deltaMove,float gammaMove) {
 		y = 1.75;
 	}
 }
-// Common Render Items for all subwindows
-void renderScene2() {
+//======================================================//
 
 	//glLoadIdentity();
 	
@@ -497,8 +580,16 @@ void renderScene2() {
 	drawCircularTree(25.5f, 0.0f, 0.0f);
 	drawCircularTree(35.5f, 0.0f, 0.0f);
 
+	// Cedros
 	drawTriangularTree(-9.5f, 0.0f, 0.0f);
 	drawTriangularTree(-25.5f, 0.0f, 0.0f);
+
+	// Molí
+	draw_windmill(0, 0, 20);
+
+	
+
+
 	//Activam pntar cares per dedins
 	glDisable(GL_CULL_FACE);
 	glPushMatrix();
@@ -509,7 +600,12 @@ void renderScene2() {
 	
 
 }
+//==============================================//
 
+
+
+//////////////////////////////////////////////////////////
+//									ESCENA				//
 // Display func for main window
 void renderScene() {
 	glutSetWindow(mainWindow);
@@ -517,7 +613,7 @@ void renderScene() {
 	glutSwapBuffers();
 }
 
-// Display func for sub window 1
+// WINDOW 1: VISIÓ PRINCIPAL 1a PERSONA ESCENA
 void renderScenesw1() {
 
 	glutSetWindow(subWindow1);
@@ -559,7 +655,7 @@ void renderScenesw1() {
 	glutSwapBuffers();
 }
 
-// Display func for sub window 2
+// WINDOW 2: Mini mapa
 void renderScenesw2() {
 
 	glutSetWindow(subWindow2);
@@ -579,7 +675,7 @@ void renderScenesw2() {
 	glutSolidCone(0.2, 0.8f, 4, 4);
 	glPopMatrix();
 
-	renderScene2();
+	renderItems();
 
 	glutSwapBuffers();
 }
@@ -609,9 +705,8 @@ void renderScenesw2() {
 	glutSwapBuffers();
 }*/
 
-// Global render func
+// Global render func: DISPLAY
 void renderSceneAll() {
-
 	// check for keyboard movement
 	if (deltaMove || gammaMove) {
 		computePos(deltaMove, gammaMove);
@@ -624,6 +719,20 @@ void renderSceneAll() {
 	renderScenesw2();
 	//renderScenesw3();
 }
+
+
+void Idle(void) {
+	// Incrementamos el ángulo
+	fAngulo += 1.0f;
+	// Si es mayor que dos pi la decrementamos
+	if (fAngulo > 360)
+		fAngulo -= 360;
+	// Indicamos que es necesario repintar la pantalla
+	glutPostRedisplay();
+}
+//======================================================//
+
+
 
 // -----------------------------------
 //             KEYBOARD
