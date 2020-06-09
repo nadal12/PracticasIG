@@ -547,7 +547,7 @@ void computePos(float deltaMove,float gammaMove) {
 		y = 1.75;
 	}
 }
-//======================================================//
+void renderItems() {//======================================================//
 
 	//glLoadIdentity();
 	
@@ -648,7 +648,7 @@ void renderScenesw1() {
 	restorePerspectiveProjection();
 	
 
-	renderScene2();
+	renderItems();
 
 	
 
