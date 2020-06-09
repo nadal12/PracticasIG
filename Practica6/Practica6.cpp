@@ -1,6 +1,10 @@
 #include <stdio.h>
+#include <windows.h>
+#include <gl\gl.h>
 #include <stdlib.h>
 #include <math.h>
+#include "tgload.h"
+#
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -37,6 +41,120 @@ int mainWindow, subWindow1, subWindow2;
 //border between subwindows
 int border = 6;
 
+#define MAX_NO_TEXTURES 8
+
+#define CDAV 0
+#define CDRE  1
+#define CDAR 2
+#define CESQ 3
+#define CDAV 4
+#define CADA 5
+
+GLuint texture_id[MAX_NO_TEXTURES];
+
+
+void initTexture(void)
+{
+
+	image_t temp_image; // variável que irá armazenar a textura a ser usada
+
+	// Habilita o uso de textura 
+	glEnable(GL_TEXTURE_2D);
+
+	// Define a forma de armazenamento dos pixels na textura (1= alihamento por byte)
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	// Define quantas texturas serão usadas no programa 
+	glGenTextures(1, texture_id);  // 1 = uma textura;
+									// texture_id = vetor que guardas os números das texturas
+
+	// Define os números da textura dos cubos
+	texture_id[CDAV] = 1001;
+	texture_id[CDRE] = 1002;
+	texture_id[CDAR] = 1003;
+	texture_id[CESQ] = 1004;
+	texture_id[CADA] = 1005;
+
+	// ****
+	// Define a textura do objeto da ESQUERDA
+	// ****
+	
+	glBindTexture(GL_TEXTURE_2D, texture_id[CDAV]);
+	tgaLoad( "skybox2_pz.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id[CDRE]);
+	tgaLoad("skybox2_px.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id[CDAR]);
+	tgaLoad("skybox2_nz.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id[CESQ]);
+	tgaLoad("skybox2_nx.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id[CADA]);
+	tgaLoad("skybox2_py.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+
+}
+
+
+void DesenhaCubo(GLuint nro_da_textura)
+
+{
+	glColor3f(1, 1, 1);
+	// Desenha Cubo 1
+
+	// define qual das texturas usar
+	glBindTexture(GL_TEXTURE_2D, texture_id[CDAV]);
+
+	glBegin(GL_QUADS);
+	//Davant
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-100.0f, -100.0f, -100.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(100.0f, -100.0f, -100.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 100.0f, -100.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-100.0f, 100.0f, -100.0f);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//Dreta
+	glBindTexture(GL_TEXTURE_2D, texture_id[CESQ]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(100, -100.0f, -100.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(100.0f, -100.0f, 100.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 100.0f, 100.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(100.0f, 100.0f, -100.0f);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//Darrera
+	glBindTexture(GL_TEXTURE_2D, texture_id[CDAR]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(100, -100.0f, 100.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(-100.0f, -100.0f, 100.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(-100.0f, 100.0f, 100.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(100.0f, 100.0f, 100.0f);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//Esquerra
+	glBindTexture(GL_TEXTURE_2D, texture_id[CDRE]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-100, -100.0f, 100.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(-100.0f,-100.0f, -100.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(-100.0f, 100.0f, -100.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-100.0f, 100.0f, 100.0f);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//Adalt
+	glBindTexture(GL_TEXTURE_2D, texture_id[CADA]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-100, 100.0f, -100.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(-100.0f, 100.0f, 100.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 100.0f, 100.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(100.0f, 100.0f, -100.0f);
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //							EXPERIMENT COORD ESF?RIQUES						 //
@@ -46,10 +164,6 @@ GLdouble beta = PI / 2;
 float betaAngle = 0.0f;
 int yOrigin = -1;
 //===========================================================================//
-
-
-
-
 void setProjection(int w1, int h1)
 {
 	float ratio;
@@ -101,6 +215,7 @@ void changeSize(int w1, int h1) {
 //////////////////////////////////////////////////////////////////////////////
 //				TOT LO QUE ÉS PER CONSTRUIR ELS OBJECTES					//
 void drawCylinder(int numMajor, int numMinor, float height, float radius) {
+	
 	double majorStep = height / numMajor;
 	double minorStep = 2.0 * PI / numMinor;
 	int i, j;
@@ -108,9 +223,10 @@ void drawCylinder(int numMajor, int numMinor, float height, float radius) {
 	for (i = 0; i < numMajor; ++i) {
 		GLfloat z0 = 0.5 * height - i * majorStep;
 		GLfloat z1 = z0 - majorStep;
-
+		glPushMatrix();
 		glBegin(GL_TRIANGLE_STRIP);
 		for (j = 0; j <= numMinor; ++j) {
+			
 			double a = j * minorStep;
 			GLfloat x = radius * cos(a);
 			GLfloat y = radius * sin(a);
@@ -123,6 +239,7 @@ void drawCylinder(int numMajor, int numMinor, float height, float radius) {
 			glVertex3f(x, y, z1);
 		}
 		glEnd();
+		glPopMatrix();
 	}
 }
 
@@ -266,15 +383,18 @@ void drawTriangularTree(float x, float y, float z) {
 
 	//Tercera Pirámide
 	glPushMatrix();
-	glColor3f(0.0, 0.3, 0.0);
+	glColor3f(1.0, 0.3, 0.0);
 	glTranslatef(0.0, 0.0, -8.0);
 	glRotatef(-90, 1.0f, 0.0f, 0.0f);
 	drawPyramid(0.0, 0.0f, 0.0f);
 	glPopMatrix();
+	
 
 	glPopMatrix();
 	glPopMatrix();
+	
 }
+
 //==========================================================================//
 
 
@@ -338,7 +458,11 @@ void computePos(float deltaMove) {
 // Common Render Items for all subwindows
 void renderScene2() {
 
+	//glLoadIdentity();
+	
 	// Terra
+	
+	glPushMatrix();
 	glColor3f(0.0f, 0.6f, 0.0f);
 	glBegin(GL_QUADS);
 	glVertex3f(-100.0f, 0.0f, -100.0f);
@@ -346,10 +470,19 @@ void renderScene2() {
 	glVertex3f(100.0f, 0.0f, 100.0f);
 	glVertex3f(100.0f, 0.0f, -100.0f);
 	glEnd();
+	glPopMatrix();
+	
+	printf("%lf\n", x);
+	printf("%lf\n", z);
+	printf("%lf\n", y);
 
+	//pintarcel();
+	
 	// Farola
+	glPushMatrix();
 	draw_streetlight();
-
+	glPopMatrix();
+	
 	drawCircularTree(2.5f, 0.0f, 0.0f);
 	drawCircularTree(9.5f, 0.0f, 0.0f);
 	drawCircularTree(15.5f, 0.0f, 0.0f);
@@ -358,12 +491,21 @@ void renderScene2() {
 
 	drawTriangularTree(-9.5f, 0.0f, 0.0f);
 	drawTriangularTree(-25.5f, 0.0f, 0.0f);
+	//Activam pntar cares per dedins
+	glDisable(GL_CULL_FACE);
+	glPushMatrix();
+	DesenhaCubo(texture_id[CDAV]);
+	glPopMatrix();
+	glEnable(GL_CULL_FACE);
+
+	
+
 }
 
 // Display func for main window
 void renderScene() {
 	glutSetWindow(mainWindow);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glutSwapBuffers();
 }
 
@@ -379,8 +521,7 @@ void renderScenesw1() {
 		x + lx, y + ly, z + lz,
 		0.0f, 1.0f, 0.0f);
 
-	renderScene2();
-
+	
 	// display fps in the top window
 	frame++;
 
@@ -391,15 +532,21 @@ void renderScenesw1() {
 		timebase = time;
 		frame = 0;
 	}
-
+	
 	setOrthographicProjection();
 
 	glPushMatrix();
 	glLoadIdentity();
+	glColor3f(1, 0, 0);
 	renderBitmapString(5, 30, 0, GLUT_BITMAP_HELVETICA_12, s);
 	glPopMatrix();
 
 	restorePerspectiveProjection();
+	
+
+	renderScene2();
+
+	
 
 	glutSwapBuffers();
 }
@@ -412,7 +559,7 @@ void renderScenesw2() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	gluLookAt(x, y + 30, z,
+	gluLookAt(x, y + 13, z,
 		x, y - 1, z,
 		lx, 0, lz);
 
@@ -489,7 +636,7 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 void pressKey(int key, int xx, int yy) {
 
 	switch (key) {
-	case GLUT_KEY_UP: deltaMove = 0.5f; break;
+	case GLUT_KEY_UP: deltaMove = 10.5f; break;
 	case GLUT_KEY_DOWN: deltaMove = -0.5f; break;
 	}
 	glutSetWindow(mainWindow);
@@ -556,6 +703,12 @@ void mouseButton(int button, int state, int x, int y) {
 
 void init() {
 
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_COLOR_MATERIAL);
+
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+	
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -585,16 +738,17 @@ int main(int argc, char** argv) {
 	// Removing the idle function to save CPU and GPU
 	//glutIdleFunc(renderSceneAll);
 	init();
-
+	
 	subWindow2 = glutCreateSubWindow(mainWindow, (w + border) * 0.75, border, w / 4 - border * 3 / 2, h / 4 - border * 3 / 2);
 	glutDisplayFunc(renderScenesw2);
 	init();
+	initTexture();
 
 	// sub windows
 	subWindow1 = glutCreateSubWindow(mainWindow, border, border, w - 2 * border, h / 2 - border * 3 / 2);
 	glutDisplayFunc(renderScenesw1);
 	init();
-
+	initTexture();
 
 
 	/*subWindow3 = glutCreateSubWindow(mainWindow, (w + border) / 2, (h + border) / 2, w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);

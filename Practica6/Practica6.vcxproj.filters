@@ -16,7 +16,38 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Practica6.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="tgload.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tgload.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Yoda.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="skybox2_nx.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="skybox2_ny.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="skybox2_nz.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="skybox2_px.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="skybox2_py.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="skybox2_pz.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
