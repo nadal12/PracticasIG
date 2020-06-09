@@ -25,7 +25,7 @@ bool freeview = false;
 // the key states. These variables will be zero
 //when no key is being presses
 float deltaAngle = 0.0f;
-float deltaMove = 0;
+float deltaMove, gammaMove = 0;
 int xOrigin = -1;
 
 // width and height of the window
@@ -289,9 +289,10 @@ void drawPyramid(float x, float y, float z) {
 }
 
 // FAROLA
-void draw_streetlight() {
+void draw_streetlight(float x, float y, float z) {
 
 	glPushMatrix();
+	glTranslatef(x, y, z);
 	glColor3f(0.5, 0.5, 0.5);
 
 	glRotatef(-90, 1, 0, 0);
@@ -441,10 +442,17 @@ void setOrthographicProjection() {
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void computePos(float deltaMove) {
+void computePos(float deltaMove,float gammaMove) {
 
-	x += deltaMove * lx * 0.1f;
-	z += deltaMove * lz * 0.1f;
+	if (deltaMove != 0) {
+		x += deltaMove * lx * 0.1f;
+		z += deltaMove * lz * 0.1f;
+	}
+	if (gammaMove != 0) {
+		x += gammaMove * lz * 0.1f;
+		z += gammaMove * (-lx) * 0.1f;
+	}
+
 	//Si volem camera free view
 	if (freeview)
 	{
@@ -452,7 +460,7 @@ void computePos(float deltaMove) {
 	}
 	else
 	{
-		y = 1.5;
+		y = 1.75;
 	}
 }
 // Common Render Items for all subwindows
@@ -605,8 +613,8 @@ void renderScenesw2() {
 void renderSceneAll() {
 
 	// check for keyboard movement
-	if (deltaMove) {
-		computePos(deltaMove);
+	if (deltaMove || gammaMove) {
+		computePos(deltaMove, gammaMove);
 		glutSetWindow(mainWindow);
 		glutPostRedisplay();
 	}
@@ -638,6 +646,8 @@ void pressKey(int key, int xx, int yy) {
 	switch (key) {
 	case GLUT_KEY_UP: deltaMove = 10.5f; break;
 	case GLUT_KEY_DOWN: deltaMove = -0.5f; break;
+	case GLUT_KEY_RIGHT: gammaMove = -0.5f; break;
+	case GLUT_KEY_LEFT: gammaMove = 0.5f; break;
 	}
 	glutSetWindow(mainWindow);
 	glutPostRedisplay();
@@ -649,6 +659,8 @@ void releaseKey(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP:
 	case GLUT_KEY_DOWN: deltaMove = 0; break;
+	case GLUT_KEY_RIGHT:
+	case GLUT_KEY_LEFT: gammaMove = 0; break;
 	}
 }
 
