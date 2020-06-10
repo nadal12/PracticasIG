@@ -43,6 +43,7 @@ int mainWindow, subWindow1, subWindow2;
 //border between subwindows
 int border = 6;
 
+bool niebla = false;
 #define MAX_NO_TEXTURES 8
 
 //Paredes y techo. 
@@ -439,6 +440,7 @@ void drawCircularTree(float x, float y, float z) {
 	glColor3f(0.6, 0.3, 0.1);
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
 
+
 	glBindTexture(GL_TEXTURE_2D, texture_id[TREE_WOOD]);
 	drawCylinder(6, 16, 12.0, 0.3);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -633,6 +635,15 @@ void renderItems() {//======================================================//
 	drawFence(0, 1, -20);
 	
 
+	if (niebla) {
+		glEnable(GL_FOG);
+
+	}
+	else {
+		glDisable(GL_FOG);
+	}
+
+
 
 	//Activam pntar cares per dedins
 	glDisable(GL_CULL_FACE);
@@ -680,7 +691,7 @@ void renderScenesw1() {
 		timebase = time;
 		frame = 0;
 	}
-	
+
 	setOrthographicProjection();
 
 	glPushMatrix();
@@ -789,6 +800,9 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 		//allibera eix y
 		freeview = !freeview;
 	}
+	if (key == 'f') {
+		niebla = !niebla;
+	}
 }
 
 void pressKey(int key, int xx, int yy) {
@@ -872,7 +886,14 @@ void init() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	
+
+	glFogi(GL_FOG_MODE, GL_LINEAR);
+	glFogf(GL_FOG_START, 1.0);
+	glFogf(GL_FOG_END, 10.0);
+	float color[] = { 0.5,0.5,0.5,0.001 };
+	glFogfv(GL_FOG_COLOR, color);
+
+
 	// register callbacks
 	glutIgnoreKeyRepeat(1);
 	glutKeyboardFunc(processNormalKeys);
