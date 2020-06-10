@@ -95,8 +95,7 @@ void initTexture(void)
 	tgaLoad("skybox2_py.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 }
 
-void DesenhaCubo(GLuint nro_da_textura)
-
+void PintarCel()
 {
 	glColor3f(1, 1, 1);
 	// Desenha Cubo 1
@@ -396,7 +395,26 @@ void draw_windmill(float x, float y, float z) {
 }
 
 
+void drawFence(float x, float y, float z) {
+	 //NI PUTA IDEA DE COM FER SES VALLAS COLEGA
+	glPushMatrix();
+	glTranslatef(x, y, z);
+	glColor3f(0, 1, 0);
+	glRotatef(90, 1.0f, 0.0f, 0.0f);
+	drawCylinder(6, 16, 1, 0.05);
+	glColor3f(0, 1, 1);
+	glTranslatef(0, 0, 0.7);
+	drawCylinder(6, 16, 1, 0.05);
+	glTranslatef(1.5, 0, 0);
+	glColor3f(1, 1, 0);
+	drawCylinder(6, 16, 1, 0.05);
+	glTranslatef(0, 0, 0.5);
+	drawCylinder(6, 16, 1, 0.05);
 
+
+	glPopMatrix();
+
+}
 
 // ARBRE
 void drawCircularTree(float x, float y, float z) {
@@ -583,13 +601,16 @@ void renderItems() {//======================================================//
 	// Molí
 	draw_windmill(0, 0, 20);
 
+
+	//Valla
+	drawFence(0, 1, -20);
 	
 
 
 	//Activam pntar cares per dedins
 	glDisable(GL_CULL_FACE);
 	glPushMatrix();
-	DesenhaCubo(texture_id[CDAV]);
+	PintarCel();
 	glPopMatrix();
 	glEnable(GL_CULL_FACE);
 
@@ -746,7 +767,7 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 void pressKey(int key, int xx, int yy) {
 
 	switch (key) {
-	case GLUT_KEY_UP: deltaMove = 0.5f; break;
+	case GLUT_KEY_UP: deltaMove = 5.5f; break;
 	case GLUT_KEY_DOWN: deltaMove = -0.5f; break;
 	case GLUT_KEY_RIGHT: gammaMove = -0.5f; break;
 	case GLUT_KEY_LEFT: gammaMove = 0.5f; break;
