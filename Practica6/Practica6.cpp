@@ -58,6 +58,9 @@ bool niebla = false;
 
 GLuint texture_id[MAX_NO_TEXTURES];
 
+//Llums
+GLfloat streetLightPosition[] = { 0.0f, 1.0f, 1.0f };
+
 void initTexture(void)
 {
 
@@ -338,7 +341,9 @@ void draw_streetlight(float x, float y, float z) {
 	glTranslatef(0, 0, 1.8);
 	glColor3f(1, 0.9, 0);
 	glScalef(0.2, 0.4, 0.2);
-	//Fer aqui 
+
+	//LLum de la farola. 
+	glLightfv(GL_LIGHT0, GL_POSITION, streetLightPosition);
 	glutSolidOctahedron();
 	glPopMatrix();
 	glPopMatrix();
@@ -889,7 +894,7 @@ void init() {
 
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	glFogf(GL_FOG_START, 1.0);
-	glFogf(GL_FOG_END, 10.0);
+	glFogf(GL_FOG_END, 50.0);
 	float color[] = { 0.5,0.5,0.5,0.001 };
 	glFogfv(GL_FOG_COLOR, color);
 
@@ -901,6 +906,16 @@ void init() {
 	glutSpecialUpFunc(releaseKey);
 	glutMouseFunc(mouseButton);
 	glutMotionFunc(mouseMove);
+}
+
+void initLighting() {
+	//Renderización de luz
+	glEnable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+	//Activar llum de la farola.
+	glEnable(GL_LIGHT0);
 }
 
 int main(int argc, char** argv) {
@@ -924,13 +939,14 @@ int main(int argc, char** argv) {
 	glutDisplayFunc(renderScenesw2);
 	init();
 	initTexture();
+	initLighting();
 
 	// sub windows
 	subWindow1 = glutCreateSubWindow(mainWindow, border, border, w - 2 * border, h / 2 - border * 3 / 2);
 	glutDisplayFunc(renderScenesw1);
 	init();
 	initTexture();
-
+	initLighting();
 
 	/*subWindow3 = glutCreateSubWindow(mainWindow, (w + border) / 2, (h + border) / 2, w / 2 - border * 3 / 2, h / 2 - border * 3 / 2);
 	glutDisplayFunc(renderScenesw3);
