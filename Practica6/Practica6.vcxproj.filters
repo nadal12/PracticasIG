@@ -49,5 +49,11 @@
     <Image Include="skybox2_pz.tga">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="treeWood.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="TreeFlowers.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

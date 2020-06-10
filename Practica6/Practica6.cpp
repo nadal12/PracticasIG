@@ -45,11 +45,15 @@ int border = 6;
 
 #define MAX_NO_TEXTURES 8
 
+//Paredes y techo. 
 #define CDAV 0
 #define CDRE 1
 #define CDAR 2
 #define CESQ 3
 #define CADA 5
+
+#define TREE_WOOD 6
+#define TREE_FLOWERS 7
 
 GLuint texture_id[MAX_NO_TEXTURES];
 
@@ -69,16 +73,20 @@ void initTexture(void)
 									// texture_id = vetor que guardas os números das texturas
 
 	// Define os números da textura dos cubos
+	//Paredes y techo. 
 	texture_id[CDAV] = 1001;
 	texture_id[CDRE] = 1002;
 	texture_id[CDAR] = 1003;
 	texture_id[CESQ] = 1004;
 	texture_id[CADA] = 1005;
 
+	//Trees.
+	texture_id[TREE_WOOD] = 1006;
+	texture_id[TREE_FLOWERS] = 1007; 
+
 	// ****
 	// Define a textura do objeto da ESQUERDA
 	// ****
-	
 	glBindTexture(GL_TEXTURE_2D, texture_id[CDAV]);
 	tgaLoad( "skybox2_pz.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 
@@ -93,6 +101,12 @@ void initTexture(void)
 
 	glBindTexture(GL_TEXTURE_2D, texture_id[CADA]);
 	tgaLoad("skybox2_py.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id[TREE_WOOD]);
+	tgaLoad("treeWood.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id[TREE_FLOWERS]);
+	tgaLoad("TreeFlowers.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 }
 
 void PintarCel()
@@ -424,7 +438,15 @@ void drawCircularTree(float x, float y, float z) {
 	glPushMatrix();
 	glColor3f(0.6, 0.3, 0.1);
 	glRotatef(90, 1.0f, 0.0f, 0.0f);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id[TREE_WOOD]);
 	drawCylinder(6, 16, 12.0, 0.3);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//Textures per sa part superior des arbres. 
+	glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+	glEnable(GL_TEXTURE_GEN_T);
+	glBindTexture(GL_TEXTURE_2D, texture_id[TREE_FLOWERS]);
 
 	glPushMatrix();
 	glColor3f(0.0, 0.3, 0.0);
@@ -441,6 +463,11 @@ void drawCircularTree(float x, float y, float z) {
 	glTranslatef(-1.0, 0.0, -6.5);
 	glutSolidSphere(2.0, 20, 20);
 	glPopMatrix();
+
+	//Desactivar textures part superior des arbres. 
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+	glDisable(GL_TEXTURE_GEN_T);
 
 	glPopMatrix();
 	glPopMatrix();
@@ -836,7 +863,6 @@ void mouseButton(int button, int state, int x, int y) {
 // -----------------------------------
 
 void init() {
-
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_COLOR_MATERIAL);
 
@@ -846,7 +872,7 @@ void init() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-
+	
 	// register callbacks
 	glutIgnoreKeyRepeat(1);
 	glutKeyboardFunc(processNormalKeys);

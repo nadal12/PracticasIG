@@ -160,6 +160,8 @@
     <Image Include="skybox2_px.tga" />
     <Image Include="skybox2_py.tga" />
     <Image Include="skybox2_pz.tga" />
+    <Image Include="TreeFlowers.tga" />
+    <Image Include="treeWood.tga" />
     <Image Include="Yoda.tga" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
