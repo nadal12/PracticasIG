@@ -1,3 +1,5 @@
+/*Etapa 2 - Doble Péndulo*/
+
 #include "iostream"
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -214,9 +216,7 @@ void Display(void)
 	//Funcio que actualitzarà els angles i acceleracions
 	glRotatef(angle, 0.0f, 0.0f, 1.0f);
 
-
 	glPopMatrix();
-
 
 	//Cnavi entre el backbuffer y el frontbuffer.
 	glutSwapBuffers();
@@ -235,12 +235,6 @@ void Idle(void)
 	//Incrementam angle segons velocitat
 	angle += aVel;
 	angle2 += aVel2;
-
-	//Aplicam el component de fricció a cada velocitat
-	/*
-	aVel *= 0.99;
-	aVel2 *= 0.99;
-	*/
 
 	//Perque index no s'incrementi fins a nombres molt grans
 	if (traj) {

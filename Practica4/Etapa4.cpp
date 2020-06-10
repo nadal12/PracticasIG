@@ -1,3 +1,5 @@
+/*Etapa 4*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -11,7 +13,9 @@
 #include <vector>
 
 //////////////////////////////////////////////////////////////////
-//                               DEFINICI� DE VARIABLES         //
+//                     DEFINICIO DE VARIABLES                   //
+//////////////////////////////////////////////////////////////////
+
 #define BASE_HEIGHT  0.25
 #define BASE_WIDE    0.05
 
@@ -78,49 +82,42 @@ float trajectoryZ[trajectoryLenght];
 
 int indexQ2 = 0;
 
-
-//==============================================================//
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-//							EXPERIMENT COORD ESF�RIQUES						 //
+//////////////////////////////////////////////////////////////////
+//              EXPERIMENT COORDENADES ESFERIQUES               //
+//////////////////////////////////////////////////////////////////
 GLdouble PI = 3.1415926535897932384626433832795;
 GLdouble beta = PI / 2;
 // Tecles d'estat. Aquestes variables seran 0 quan no s'apretin les tecles
 float betaAngle = 0.0f;
 int yOrigin = -1;
-//===========================================================================//
 
+//////////////////////////////////////////////////////////////////
+//                           RESHAPE                            //
+//////////////////////////////////////////////////////////////////
 
-
-//////////////////////////////////////////////////////
-//                                RESHAPE           //
-// Aquesta funci� l'usarem pes reshape des viewport //
+// Aquesta funcio l'usarem pes reshape des viewport //
 void setProjection(int w1, int h1)
 {
 	float ratio;
-	// Prevent a divide by zero, when window is too short
-	// (you cant make a window of zero width).
 	ratio = 1.0f * w1 / h1;
-	// Reset the coordinate system before modifying
-	glMatrixMode(GL_PROJECTION); //ProjectionView is the matrix that represents your camera's lens (aperture, far-field, near-field, etc).
+
+	glMatrixMode(GL_PROJECTION); 
 	glLoadIdentity();
 
-	// Set the viewport to be the entire window
+	//Viewport per a tota la finestra. 
 	glViewport(0, 0, w1, h1);
 
-	// Set the clipping volume
+	// Clipping volume
 	gluPerspective(45, ratio, 0.1, 1000); //Referent a s'entorn, com el veus
-	glMatrixMode(GL_MODELVIEW); //ModelView is the matrix that represents your camera (position, pointing, and up vector).
+	glMatrixMode(GL_MODELVIEW);
 }
-//Lo que a ses anteriors etapes li deiem reshape :D //
+
+//Lo que a ses anteriors etapes li deiem reshape :D 
 void changeSize(int w1, int h1) {
 
 	if (h1 == 0)
 		h1 = 1;
 
-	// we're keeping these values cause we'll need them latter
 	w = w1;
 	h = h1;
 
@@ -135,8 +132,9 @@ void changeSize(int w1, int h1) {
 
 
 /////////////////////////////////////////////////////////////////////
-// Les seg�ents dues funcions ens serviran per dibuixar les taules //
+// Les seguents dues funcions ens serviran per dibuixar les taules //
 // Com construim una pota de la taula                              //
+/////////////////////////////////////////////////////////////////////
 void draw_leg(float xt, float yt, float zt)
 {
 	glPushMatrix();
@@ -162,8 +160,6 @@ void draw_table()
 	draw_leg(-0.45, -0.5, 0.45);
 }
 //=================================================================//
-
-
 
 //////////////////////////////////////
 // Si volguessim fer ninots de neu: //
@@ -231,8 +227,6 @@ void pintarObjecte() {
 }
 //=======================//
 
-
-
 GLfloat decrementarAngulo(GLfloat angulo) {
 	if (angulo > 360) {
 		angulo -= 360;
@@ -240,10 +234,9 @@ GLfloat decrementarAngulo(GLfloat angulo) {
 	return angulo;
 }
 
-
-
 /////////////////////////////////////////////////////////////////////////////////
-//           Aix� crec que se usar� per printar es FPS per pantalla            //
+//                               FPS per pantalla                              //
+////////////////////////////////////////////////////////////////////////////////
 void renderBitmapString(float x, float y, float z, void* font, char* string) {
 	char* c;
 	glRasterPos3f(x, y, z);
@@ -252,8 +245,6 @@ void renderBitmapString(float x, float y, float z, void* font, char* string) {
 	}
 }
 //=============================================================================//
-
-
 
 void restorePerspectiveProjection() {
 
@@ -326,7 +317,6 @@ void renderScene2() {
 
 	draw_table();
 	pintarObjecte();
-
 }
 
 void perspectiva() {
@@ -365,21 +355,14 @@ void perspectiva() {
 	default:
 		break;
 	}
-
-
 }
 
-// Display func for main window
 void renderScene() {
-
 	glClear(GL_COLOR_BUFFER_BIT);
 	glutSwapBuffers();
 }
 
-// Display func for sub window 1
 void renderScenesw1() {
-
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
@@ -398,9 +381,7 @@ void renderScenesw1() {
 		gluLookAt(x, y, z,
 			x + lx, y + ly, z + lz,
 			0, 1, 0);
-
 	}
-
 
 	renderScene2();
 
@@ -456,8 +437,6 @@ void renderSceneAll() {
 
 	//printf("%f", xlorenz);
 
-
-
 	// check for keyboard movement
 	if (!forapitjar)
 	{
@@ -466,11 +445,7 @@ void renderSceneAll() {
 			glutPostRedisplay();
 		}
 	}
-
-
-
 	renderScenesw1();
-
 }
 
 // -----------------------------------
@@ -499,8 +474,6 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 		freeview = !freeview;
 
 	}
-	
-
 }
 
 void pressKey(int key, int xx, int yy) {
@@ -511,7 +484,6 @@ void pressKey(int key, int xx, int yy) {
 	case GLUT_KEY_DOWN: deltaMove = -0.5f; break;
 	}
 	glutPostRedisplay();
-
 }
 
 
@@ -573,12 +545,6 @@ void mouseButton(int button, int state, int x, int y) {
 
 
 }
-
-
-
-
-
-
 
 // -----------------------------------
 //             MAIN and INIT

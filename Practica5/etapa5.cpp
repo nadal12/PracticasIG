@@ -1,9 +1,4 @@
-﻿/*******CONTROLES********/
-/* 
--: Disminuir luz ambiente. 
-+: Aumentar luz ambiente.
-*/
-
+﻿/* Etapa 5 */
 
 #include "iostream"
 #include <GL/glut.h>

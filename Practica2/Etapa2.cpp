@@ -1,6 +1,4 @@
-// Etapa2.cpp
-// Fichero principal 
-////////////////////////////////////////////////////
+/*Etapa 2*/
 
 #include "iostream"
 #include <GL/glut.h>
@@ -65,7 +63,6 @@ void Display(void)
 
 	// Rotamos las proximas primitivas
 	glRotatef(fAngulo, 0.0f, 0.0f, 1.0f);
-
 	
 	// Creamos a continuación dibujamos los tres poligonos
 	glBegin(GL_POLYGON);				
@@ -113,7 +110,6 @@ void Display(void)
 	glPopMatrix();
 
 	//Cambio entre el backbuffer y el frontbuffer.
-
 	glutSwapBuffers();
 }
 
@@ -128,7 +124,6 @@ void Idle(void)
 	// Indicamos que es necesario repintar la pantalla
 	glutPostRedisplay();
 }
-
 
 // Función principal
 int main(int argc, char** argv)
@@ -146,7 +141,6 @@ int main(int argc, char** argv)
 	// Creamos la nueva ventana
 	glutCreateWindow("ViewPort - Etapa 2");
 
-
 	// Indicamos cuales son las funciones de redibujado e idle
 	glutDisplayFunc(Display);
 	glutIdleFunc(Idle);
@@ -158,7 +152,6 @@ int main(int argc, char** argv)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
 	//La sintaxi és glOrtho(x min, x max, y min, y max, z1, z2)
-
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();

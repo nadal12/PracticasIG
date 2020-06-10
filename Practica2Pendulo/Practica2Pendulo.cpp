@@ -1,4 +1,6 @@
-﻿#include "iostream"
+﻿/*Etapa 2 - Péndulo*/
+
+#include "iostream"
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -19,19 +21,15 @@ const float y_corda = 0;
 const float radiQ = 0.05;	//Radio quadrat 1
 float angle = PI / 4;		//Angle
 
-
 float xq, yq = NULL;		//Centro quadrat
 float aVel = 0.0;			//Velocitat 
 float aAcc = 0.0;			//Acceleración
-
 
 //Constants per càlcul de trajectòria
 const int trajectoryQ1Lenght = 100;
 float trajectoryXQ1[trajectoryQ1Lenght];
 float trajectoryYQ1[trajectoryQ1Lenght];
 int index = 0;
-
-
 
 void reshape(int w, int h) {
 
@@ -145,8 +143,6 @@ void Idle(void)
 	//Indicam que es necessari repintar la pantalla
 	glutPostRedisplay();
 }
-
-
 
 // Funció principal
 int main(int argc, char** argv)

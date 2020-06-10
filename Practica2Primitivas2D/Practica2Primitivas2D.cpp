@@ -1,3 +1,5 @@
+/*Etapa 3*/
+
 #include "iostream"
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -155,8 +157,6 @@ void Display(void)
 	glVertex2f(-0.5, -0.5);
 	glEnd();
 
-
-
 	glPopMatrix();
 
 	//Cambio entre el backbuffer y el frontbuffer.
@@ -245,7 +245,6 @@ int main(int argc, char** argv)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	//glOrtho(-1.0, 1.0f, -1.0, 1.0f, -1.0, 1.0f);
 	//La sintaxi és glOrtho(x min, x max, y min, y max, z1, z2)
-
 
 	// Comienza la ejecución del core de GLUT
 	glutMainLoop();
