@@ -155,26 +155,6 @@
     <ClInclude Include="Model_OBJ.h" />
     <ClInclude Include="tgload.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="textures\gremio2.tga" />
-    <Image Include="textures\sky4.tga" />
-    <Image Include="textures\skybox2_nx.tga" />
-    <Image Include="textures\skybox2_ny.tga" />
-    <Image Include="textures\skybox2_nz.tga" />
-    <Image Include="textures\skybox2_px.tga" />
-    <Image Include="textures\skybox2_py.tga" />
-    <Image Include="textures\skybox2_pz.tga" />
-    <Image Include="textures\TCG1.tga" />
-    <Image Include="textures\TreeFlowers.tga" />
-    <Image Include="textures\treeWood.tga" />
-    <Image Include="textures\Yoda.tga" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="objects\granero.obj" />
-    <Object Include="objects\Landscape.obj" />
-    <Object Include="objects\osoPeluche.obj" />
-    <Object Include="objects\vaca.obj" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
