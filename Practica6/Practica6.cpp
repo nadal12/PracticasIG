@@ -87,6 +87,8 @@ GLfloat streetLightPosition[] = { 0.0f, 1.0f, 1.0f };
 //Objectes (.obj)
 Model_OBJ objecte;
 Model_OBJ OSO;
+Model_OBJ Vallas;
+
 
 GLfloat anglerotacio = 0;
 
@@ -687,7 +689,11 @@ void renderItems() {//======================================================//
 	draw_windmill(0, 0, 20);
 
 	//Valla
-	//drawFence(0, 1, -20);
+	glPushMatrix();
+	glTranslated(-37, -0.5, -44);
+	glColor3f(0.7, 0.5, 0.3);
+	Vallas.Draw();
+	glPopMatrix();
 
 	glPushMatrix();
 	glRotatef(90, 0, 1, 0);
@@ -1103,6 +1109,10 @@ int main(int argc, char** argv) {
 	strcpy_s(buffer, "objects/granero.obj");
 
 	OSO.Load(buffer);
+
+	strcpy_s(buffer, "objects/vallas.obj");
+
+	Vallas.Load(buffer);
 
 	// init Menus
 	createPopupMenus();
