@@ -2,6 +2,9 @@
 
 Model_OBJ::Model_OBJ()
 {
+	this->Faces_Triangles = 0; 
+	this->normals = 0;
+	this->vertexBuffer= 0;
 	this->TotalConnectedTriangles = 0;
 	this->TotalConnectedPoints = 0;
 }
