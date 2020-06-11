@@ -147,22 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Model_OBJ.cpp" />
     <ClCompile Include="Practica6.cpp" />
     <ClCompile Include="tgload.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Model_OBJ.h" />
     <ClInclude Include="tgload.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="skybox2_nx.tga" />
-    <Image Include="skybox2_ny.tga" />
-    <Image Include="skybox2_nz.tga" />
-    <Image Include="skybox2_px.tga" />
-    <Image Include="skybox2_py.tga" />
-    <Image Include="skybox2_pz.tga" />
-    <Image Include="TreeFlowers.tga" />
-    <Image Include="treeWood.tga" />
-    <Image Include="Yoda.tga" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

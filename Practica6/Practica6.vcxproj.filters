@@ -21,39 +21,16 @@
     <ClCompile Include="tgload.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Model_OBJ.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tgload.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Yoda.tga">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="skybox2_nx.tga">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="skybox2_ny.tga">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="skybox2_nz.tga">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="skybox2_px.tga">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="skybox2_py.tga">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="skybox2_pz.tga">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="treeWood.tga">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="TreeFlowers.tga">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <ClInclude Include="Model_OBJ.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "tgload.h"
+#include "Model_OBJ.h"
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -61,6 +62,9 @@ GLuint texture_id[MAX_NO_TEXTURES];
 //Llums
 GLfloat streetLightPosition[] = { 0.0f, 1.0f, 1.0f };
 
+//Objectes (.obj)
+Model_OBJ objecte;
+
 void initTexture(void)
 {
 
@@ -92,25 +96,25 @@ void initTexture(void)
 	// Define a textura do objeto da ESQUERDA
 	// ****
 	glBindTexture(GL_TEXTURE_2D, texture_id[CDAV]);
-	tgaLoad( "skybox2_pz.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+	tgaLoad( "textures/skybox2_pz.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 
 	glBindTexture(GL_TEXTURE_2D, texture_id[CDRE]);
-	tgaLoad("skybox2_px.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+	tgaLoad("textures/skybox2_px.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 
 	glBindTexture(GL_TEXTURE_2D, texture_id[CDAR]);
-	tgaLoad("skybox2_nz.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+	tgaLoad("textures/skybox2_nz.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 
 	glBindTexture(GL_TEXTURE_2D, texture_id[CESQ]);
-	tgaLoad("skybox2_nx.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+	tgaLoad("textures/skybox2_nx.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 
 	glBindTexture(GL_TEXTURE_2D, texture_id[CADA]);
-	tgaLoad("skybox2_py.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+	tgaLoad("textures/skybox2_py.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 
 	glBindTexture(GL_TEXTURE_2D, texture_id[TREE_WOOD]);
-	tgaLoad("treeWood.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+	tgaLoad("textures/treeWood.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 
 	glBindTexture(GL_TEXTURE_2D, texture_id[TREE_FLOWERS]);
-	tgaLoad("TreeFlowers.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+	tgaLoad("textures/TreeFlowers.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 }
 
 void PintarCel()
@@ -635,10 +639,19 @@ void renderItems() {//======================================================//
 	// Molí
 	draw_windmill(0, 0, 20);
 
-
 	//Valla
 	drawFence(0, 1, -20);
-	
+
+	glPushMatrix();
+	glRotatef(90, 0, 1, 0);
+	glTranslatef(-1.0, 3.0, -1.0);
+	//Textures per sa part superior des arbres. 
+	glColor3f(1, 1, 1);
+
+	objecte.Draw();
+
+	glPopMatrix();
+
 
 	if (niebla) {
 		glEnable(GL_FOG);
@@ -953,6 +966,14 @@ int main(int argc, char** argv) {
 	init();
 	*/
 	// enter GLUT event processing cycle
+
+	//Carregar objecte. 
+
+	char buffer[100];
+	strcpy_s(buffer, "objects/granero.obj");
+
+	objecte.Load(buffer);
+
 	glutMainLoop();
 
 	return 1;
