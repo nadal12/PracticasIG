@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\objects">
+      <UniqueIdentifier>{17948ca5-239a-402e-8a20-cfef88ae936b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\textures">
+      <UniqueIdentifier>{3c9a928c-1606-4a72-98c5-436a99229eba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Model_OBJ.cpp">
@@ -32,5 +38,57 @@
     <ClInclude Include="Model_OBJ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\gremio2.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\sky4.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\skybox2_nx.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\skybox2_ny.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\skybox2_nz.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\skybox2_px.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\skybox2_py.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\skybox2_pz.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\TCG1.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\TreeFlowers.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\treeWood.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="textures\Yoda.tga">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="objects\granero.obj">
+      <Filter>Resource Files\objects</Filter>
+    </Object>
+    <Object Include="objects\Landscape.obj">
+      <Filter>Resource Files\objects</Filter>
+    </Object>
+    <Object Include="objects\osoPeluche.obj">
+      <Filter>Resource Files\objects</Filter>
+    </Object>
+    <Object Include="objects\vaca.obj">
+      <Filter>Resource Files\objects</Filter>
+    </Object>
   </ItemGroup>
 </Project>
