@@ -604,7 +604,7 @@ void renderItems() {//======================================================//
 	//glLoadIdentity();
 	
 	// Terra
-	
+	/*
 	glPushMatrix();
 	glColor3f(1.0f, 0.6f, 0.0f);
 	glBegin(GL_QUADS);
@@ -614,7 +614,7 @@ void renderItems() {//======================================================//
 	glVertex3f(100.0f, 0.0f, -100.0f);
 	glEnd();
 	glPopMatrix();
-	
+	*/
 	printf("%lf\n", x);
 	printf("%lf\n", z);
 	printf("%lf\n", y);
@@ -644,9 +644,9 @@ void renderItems() {//======================================================//
 
 	glPushMatrix();
 	glRotatef(90, 0, 1, 0);
-	glTranslatef(-1.0, 3.0, -1.0);
+	glTranslatef(0,4,0);
 	//Textures per sa part superior des arbres. 
-	glColor3f(1, 1, 1);
+	glColor3f(1.39, .69, .19);
 
 	objecte.Draw();
 
@@ -970,7 +970,7 @@ int main(int argc, char** argv) {
 	//Carregar objecte. 
 
 	char buffer[100];
-	strcpy_s(buffer, "objects/granero.obj");
+	strcpy_s(buffer, "objects/Landscape.obj");
 
 	objecte.Load(buffer);
 
