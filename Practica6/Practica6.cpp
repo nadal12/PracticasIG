@@ -693,6 +693,7 @@ void renderItems() {//======================================================//
 	glTranslated(-37, -0.5, -44);
 	glColor3f(0.7, 0.5, 0.3);
 	Vallas.Draw();
+	draw_streetlight(0,1,15);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -700,11 +701,12 @@ void renderItems() {//======================================================//
 	glTranslatef(0,4,0);
 	//Textures per sa part superior des arbres. 
 	glColor3f(1.39, .69, .19);
-
+	
 	objecte.Draw();
 	
 
 	glPopMatrix();
+
 
 
 	if (niebla) {
@@ -714,8 +716,6 @@ void renderItems() {//======================================================//
 	else {
 		glDisable(GL_FOG);
 	}
-
-
 
 	//Activam pntar cares per dedins
 	glDisable(GL_CULL_FACE);
