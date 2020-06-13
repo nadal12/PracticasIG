@@ -45,7 +45,8 @@ int mainWindow, subWindow1, subWindow2;
 int border = 6;
 
 bool niebla = false;
-bool rotacio = false;
+bool rotacio = true;
+bool sun = true; 
 
 //Menus
 // menu status
@@ -83,12 +84,16 @@ GLuint texture_id[MAX_NO_TEXTURES];
 
 //Llums
 GLfloat streetLightPosition[] = { 0.0f, 1.0f, 1.0f };
+GLfloat ambientLight[] = { 0.0f, 0.0f, 0.0f, 0.3f };
+
+GLfloat especularLight[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+GLfloat difuseLight[] = { 0.8f, 0.8f, 0.8f, 1.0f };
 
 //Objectes (.obj)
 Model_OBJ objecte;
 Model_OBJ OSO;
 Model_OBJ Vallas;
-
+Model_OBJ pato;
 
 GLfloat anglerotacio = 0;
 
@@ -448,7 +453,6 @@ void draw_windmill(float x, float y, float z) {
 
 
 void drawFence(float x, float y, float z) {
-	 //NI PUTA IDEA DE COM FER SES VALLAS COLEGA
 	glPushMatrix();
 	glTranslatef(x, y, z);
 	glColor3f(0, 1, 0);
@@ -462,10 +466,7 @@ void drawFence(float x, float y, float z) {
 	drawCylinder(6, 16, 1, 0.05);
 	glTranslatef(0, 0, 0.5);
 	drawCylinder(6, 16, 1, 0.05);
-
-
 	glPopMatrix();
-
 }
 
 // ARBRE
@@ -657,14 +658,6 @@ void renderItems() {//======================================================//
 	printf("%lf\n", y);
 	printf("%lf\n", z);
 	
-
-	//pintarcel();
-	
-	// Farola
-	glPushMatrix();
-	draw_streetlight(0,0,0);
-	glPopMatrix();
-	
 	drawCircularTree(38.0f, 1.0f,-30.0f);
 	drawCircularTree(44.0f, 1.0f, -35.0f);
 	glPushMatrix();
@@ -679,20 +672,37 @@ void renderItems() {//======================================================//
 	glPopMatrix();
 	drawCircularTree(50.0f, 1.0f, -30.0f);
 	drawCircularTree(44.5f, 1.0f, -25.0f);
-	//drawCircularTree(35.5f, 0.0f, 0.0f);
 
-	// Cedros
-	//drawTriangularTree(-9.5f, 0.0f, 0.0f);
-	//drawTriangularTree(-25.5f, 0.0f, 0.0f);
+	drawCircularTree(20, 1.0f, -10);
+	drawCircularTree(30, 1.0f, -20);
+	drawCircularTree(10, 1.0f, -30);
+	drawCircularTree(0, 1.0f, -40);
 
 	// Molí
-	draw_windmill(0, 0, 20);
+	draw_windmill(50, 0, -10);
 
 	//Valla
 	glPushMatrix();
-	glTranslated(-37, -0.5, -44);
+	glTranslated(40, -0.5, -20);
 	glColor3f(0.7, 0.5, 0.3);
 	Vallas.Draw();
+
+	glScalef(0.02f, 0.02f,0.02f);
+	glRotatef(-90, 1.0f, 0.0f, 0.0f);
+
+	glTranslated(50, -5.0, 65);
+	pato.Draw();
+
+	glTranslated(40, -5.0, 0);
+	pato.Draw();
+
+	glRotatef(-45, 0.0f, 0.0f, 1.0f);
+	glTranslated(50, -10.0, 0);
+	pato.Draw();
+
+	glTranslated(45, -10.0, 0);
+	pato.Draw();
+
 	draw_streetlight(0,1,15);
 	glPopMatrix();
 
@@ -857,6 +867,44 @@ void Idle(void) {
 		// Indicamos que es necesario repintar la pantalla
 		glutPostRedisplay();
 	}
+
+	glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLight);
+
+	glLightfv(GL_LIGHT1, GL_SPECULAR, especularLight);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, difuseLight);
+
+	if (sun) {
+		//Apagar farolas
+		glDisable(GL_LIGHT0);
+
+		//Activar luz ambiente.
+		glEnable(GL_LIGHT1);
+
+		//Poner luz ambiente. 
+		ambientLight[0] = 0.5f;
+		ambientLight[1] = 0.5f;
+		ambientLight[2] = 0.5f;
+
+		especularLight[0] = 1.0f;
+		especularLight[1] = 1.0f;
+		especularLight[2] = 1.0f;
+
+		difuseLight[0] = 0.5f;
+		difuseLight[1] = 0.5f;
+		difuseLight[2] = 0.5f;
+	}
+	else {
+		//Encender farolas
+		glEnable(GL_LIGHT0);
+
+		//Desactivar luz ambiente.
+		glDisable(GL_LIGHT1);
+
+		//Quitar luz ambiente. 
+		ambientLight[0] = 0.01f;
+		ambientLight[1] = 0.01f;
+		ambientLight[2] = 0.01f;		
+	}
 }
 //======================================================//
 
@@ -887,7 +935,7 @@ void pressKey(int key, int xx, int yy) {
 
 	switch (key) {
 	case GLUT_KEY_UP: deltaMove = 5.5f; break;
-	case GLUT_KEY_DOWN: deltaMove = -0.5f; break;
+	case GLUT_KEY_DOWN: deltaMove = -5.5f; break;
 	case GLUT_KEY_RIGHT: gammaMove = -0.5f; break;
 	case GLUT_KEY_LEFT: gammaMove = 0.5f; break;
 	}
@@ -977,9 +1025,8 @@ void processFillMenu(int option) {
 void processColorMenu(int option) {
 
 	switch (option) {
-	case RED:freeview = true; break;
-	case BLUE:freeview = false; break;
-
+	case RED:sun = true; break;
+	case BLUE:sun = false; break;
 	}
 }
 
@@ -1001,8 +1048,8 @@ void createPopupMenus() {
 	glutAddMenuEntry("Sin niebla", LINE);
 
 	llumMenu = glutCreateMenu(processColorMenu);
-	glutAddMenuEntry("Libre", RED);
-	glutAddMenuEntry("Fija eje Y", BLUE);
+	glutAddMenuEntry("Día", RED);
+	glutAddMenuEntry("Noche", BLUE);
 
 	menutextura = glutCreateMenu(processtexturemenu);
 	glutAddMenuEntry("Texturas activadas", ORANGE);
@@ -1104,15 +1151,16 @@ int main(int argc, char** argv) {
 
 	char buffer[100];
 	strcpy_s(buffer, "objects/Landscape.obj");
-
 	objecte.Load(buffer);
-	strcpy_s(buffer, "objects/granero.obj");
 
+	strcpy_s(buffer, "objects/granero.obj");
 	OSO.Load(buffer);
 
 	strcpy_s(buffer, "objects/vallas.obj");
-
 	Vallas.Load(buffer);
+
+	strcpy_s(buffer, "objects/pato.obj");
+	pato.Load(buffer);
 
 	// init Menus
 	createPopupMenus();
