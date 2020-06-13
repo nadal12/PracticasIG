@@ -640,20 +640,6 @@ void angles() {
 
 void renderItems() {//======================================================//
 
-	//glLoadIdentity();
-	
-	// Terra
-	/*
-	glPushMatrix();
-	glColor3f(1.0f, 0.6f, 0.0f);
-	glBegin(GL_QUADS);
-	glVertex3f(-100.0f, 0.0f, -100.0f);
-	glVertex3f(-100.0f, 0.0f, 100.0f);
-	glVertex3f(100.0f, 0.0f, 100.0f);
-	glVertex3f(100.0f, 0.0f, -100.0f);
-	glEnd();
-	glPopMatrix();
-	*/
 	printf("%lf\n", x);
 	printf("%lf\n", y);
 	printf("%lf\n", z);
@@ -679,7 +665,7 @@ void renderItems() {//======================================================//
 	drawCircularTree(0, 1.0f, -40);
 
 	// Molí
-	draw_windmill(50, 0, -10);
+	draw_windmill(40, 0, 30);
 
 	//Valla
 	glPushMatrix();
