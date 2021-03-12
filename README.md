@@ -4,7 +4,7 @@ Asignatura: Informática Gráfica (Prácticas)
 Curso: 2019-2020
 Proyecto ralizado por Nadal Llabres, Itria Mascaró y Andreu López
 Más información en https://www.youtube.com/watch?v=nAymrRMQJDU&t=102s
-#Etapas
+# Etapas
 
 ## Etapa 1: Generación del Workspace y primer programa en Opengl mediante GLUT
 Compilar la Etapa1 sobre Linux
